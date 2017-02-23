@@ -133,6 +133,7 @@ ExceptionHandler(ExceptionType which)
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////	
 			
+			
 		case SC_Read :
 			if (arg2 <= 0 || arg3 < 0){
 				printf("\nRead 0 byte.\n");
@@ -255,6 +256,8 @@ static int SRead(int addr, int size, int id)  //input 0  output 1
 		return num;
 	}
 }
+
+
 
 static void SWrite(char *buffer, int size, int id)
 {
