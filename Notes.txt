@@ -1,0 +1,5 @@
+Some notes about this VM and Nachos.
+
+1. The DDD debugger has been installed if you wish to try it.
+2. The student user is in the wheel group so it can use sudo to perform administrative functions...Please use this power with the respect it deserves!
+3. The 'nachos_package' folder on the Desktop should be used as a fresh/original copy of all needed files.  Work from the /home/student/Development folder instead.
