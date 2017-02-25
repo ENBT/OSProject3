@@ -258,18 +258,15 @@ static void SWrite(char *buffer, int size, int id)
 //ADDED BY IAN BEATTY
 //hehe SEx..... im 12
 static void SExit(int status){
-	//we will need a way to identify threads
-	//if SExit can only be called if the status is 0 this check is redundant
 	if (status == 0){
-	printf("%s is calling SExit, status = %d\n", currentThread->getName(), status);
+	printf("in SExit, status = %d\n", status);
 	currentThread->Finish(); //should clean up everything nicely
 	}
 }
 
 //ADDED BY IAN BEATTY
 static void SYield(){
-	//we will need a way to identify threads
-	printf("%s is calling SYield\n", currentThread->getName());
+	printf("%s is calling SYield", currentThread->getName());
 	currentThread->Yield();
 }
 
