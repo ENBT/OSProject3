@@ -32,10 +32,10 @@
 
 static int SRead(int addr, int size, int id);
 static void SWrite(char *buffer, int size, int id);
-static int Join(SpaceId id);
+/*static int Join(SpaceId id);
 static void Exit(int status);
 static void Yield();
-
+*/
 // end FA98
 
 //----------------------------------------------------------------------
@@ -106,16 +106,17 @@ ExceptionHandler(ExceptionType which)
 			/* ----------------------------*/
 			/* return the process id for the newly created process, return value
 			is to write at R2 */
-			Machine->WriteRegister(2, processed);
+			//Machine->WriteRegister(2, processed);
 			/* routine task – do at last -- generally manipulate PCReg,
 			PrevPCReg, NextPCReg so that they point to proper place*/
+			/*
 			int pc;
 			pc=machine->ReadRegister(PCReg);
 			machine->WriteRegister(PrevPCReg,pc);
 			pc=machine->ReadRegister(NextPCReg);
 			machine->WriteRegister(PCReg,pc);
 			pc += 4;
-			machine->WriteRegister(NextPCReg,pc);
+			machine->WriteRegister(NextPCReg,pc);*/
 			break;
 			
 		case SC_Join :
@@ -132,7 +133,6 @@ ExceptionHandler(ExceptionType which)
 //////////////////////END PROJECT 3///////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////	
-			
 			
 		case SC_Read :
 			if (arg2 <= 0 || arg3 < 0){
@@ -257,8 +257,6 @@ static int SRead(int addr, int size, int id)  //input 0  output 1
 	}
 }
 
-
-
 static void SWrite(char *buffer, int size, int id)
 {
 	//write to terminal, try writting your own code using console class.
@@ -280,14 +278,17 @@ static SpaceId Exec(char *name){
 static int Join(SpaceId id){
     
 }
-
-static void Exit(int status){
-    
-}
-
-static void Yield(){
-    
-}
 */
+static void Exit(int status){
+	if(status == 0){
+		printf("Current Thread Finished\n");
+		currentThread->Finish();
+	}  
+}
+
+//static void Yield(){
+    
+//}
+
 
 
