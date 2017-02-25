@@ -319,8 +319,10 @@ bitmap.o: ../userprog/bitmap.cc ../threads/copyright.h \
   /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
   /usr/include/string.h /usr/include/xlocale.h ../filesys/openfile.h \
   ../threads/copyright.h ../threads/utility.h
-exception.o: ../userprog/exception.cc /usr/include/stdio.h \
-  /usr/include/features.h /usr/include/sys/cdefs.h \
+exception.o: ../userprog/exception.cc ../threads/copyright.h \
+  ../threads/system.h ../threads/copyright.h ../threads/utility.h \
+  ../threads/bool.h ../machine/sysdep.h ../threads/copyright.h \
+  /usr/include/stdio.h /usr/include/features.h /usr/include/sys/cdefs.h \
   /usr/include/bits/wordsize.h /usr/include/gnu/stubs.h \
   /usr/include/gnu/stubs-32.h \
   /usr/lib/gcc/i386-redhat-linux/4.1.2/include/stddef.h \
@@ -328,19 +330,16 @@ exception.o: ../userprog/exception.cc /usr/include/stdio.h \
   /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
   /usr/include/bits/wchar.h /usr/include/gconv.h ../threads/stdarg.h \
   /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
-  ../threads/copyright.h ../threads/system.h ../threads/copyright.h \
-  ../threads/utility.h ../threads/bool.h ../machine/sysdep.h \
-  ../threads/copyright.h /usr/include/string.h /usr/include/xlocale.h \
-  ../threads/thread.h ../machine/machine.h ../threads/utility.h \
-  ../machine/translate.h ../machine/disk.h ../userprog/addrspace.h \
-  ../filesys/filesys.h ../threads/copyright.h ../filesys/openfile.h \
-  ../threads/utility.h ../threads/scheduler.h ../threads/list.h \
-  ../machine/interrupt.h ../threads/list.h ../machine/stats.h \
-  ../machine/timer.h ../filesys/filesys.h ../filesys/synchdisk.h \
-  ../machine/disk.h ../threads/synch.h ../network/post.h \
-  ../threads/copyright.h ../machine/network.h ../threads/synchlist.h \
-  ../threads/synch.h ../userprog/syscall.h ../userprog/addrspace.h \
-  ../machine/sysdep.h
+  /usr/include/string.h /usr/include/xlocale.h ../threads/thread.h \
+  ../machine/machine.h ../threads/utility.h ../machine/translate.h \
+  ../machine/disk.h ../userprog/addrspace.h ../filesys/filesys.h \
+  ../threads/copyright.h ../filesys/openfile.h ../threads/utility.h \
+  ../threads/scheduler.h ../threads/list.h ../machine/interrupt.h \
+  ../threads/list.h ../machine/stats.h ../machine/timer.h \
+  ../filesys/filesys.h ../filesys/synchdisk.h ../machine/disk.h \
+  ../threads/synch.h ../network/post.h ../threads/copyright.h \
+  ../machine/network.h ../threads/synchlist.h ../threads/synch.h \
+  ../userprog/syscall.h
 progtest.o: ../userprog/progtest.cc ../threads/copyright.h \
   ../threads/system.h ../threads/copyright.h ../threads/utility.h \
   ../threads/bool.h ../machine/sysdep.h ../threads/copyright.h \

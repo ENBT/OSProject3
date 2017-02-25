@@ -47,12 +47,6 @@ halt.o: halt.c
 halt: halt.o start.o
 	$(LD) $(LDFLAGS) start.o halt.o -o halt.coff
 	../bin/coff2noff halt.coff halt
-	
-dootdoot.o: dootdoot.c
-	$(CC) $(CFLAGS) -c dootdoot.c
-dootdoot: dootdoot.o start.o
-	$(LD) $(LDFLAGS) start.o dootdoot.o -o dootdoot.coff
-	../bin/coff2noff dootdoot.coff dootdoot
 
 shell.o: shell.c
 	$(CC) $(CFLAGS) -c shell.c
