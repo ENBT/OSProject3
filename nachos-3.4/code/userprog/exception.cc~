@@ -274,7 +274,7 @@ static void SYield(){
 	printf("%s is after the Yield\n", currentThread->getName());
 }
 
-static SpaceId SExec(char *name){
+static SpaceId Exec(char *name){
 	// what the fuk do we write here????
 	// how does any of this work????
 	// ahhhhh

@@ -15,6 +15,8 @@
 int
 main()
 {
-    Halt();
+	Write("bingo.c is running\n", 32, 1);
+    Yield();
+    Exit(0);
     /* not reached */
 }
