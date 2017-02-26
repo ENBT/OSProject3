@@ -34,6 +34,8 @@ static int SRead(int addr, int size, int id);
 static void SWrite(char *buffer, int size, int id);
 static void SExit(int status); //ADDED BY IAN BEATTY
 static void SYield(); //ADDED BY IAN BEATTY
+static void SExec(char *name);
+extern void StartProcess(char *file), ConsoleTest(char *in, char *out);
 
 // end FA98
 
@@ -95,6 +97,39 @@ ExceptionHandler(ExceptionType which)
 		
 
 		case SC_Exec :
+			printf("In exec\n");
+			int name = machine->ReadRegister(4);
+        	char *programName = new char[100];
+        	int i = 0; 
+        	int character = 1;
+        	while ((i < 98) && (character != 0)) {
+          		machine->ReadMem(name+i, 1, &character);
+          		programName[i++] = (char) character;
+        	}
+        	programName[i] = '\0';
+        	Thread *t = new Thread(programName);
+        	t->Fork(StartProcess(programName), 1);
+        	machine->WriteRegister(2, (int) t->getName());
+        	machine->WriteRegister(PrevPCReg, machine->ReadRegister(PCReg));
+    		machine->WriteRegister(PCReg, machine->ReadRegister(NextPCReg));
+    		machine->WriteRegister(NextPCReg, machine->ReadRegister(NextPCReg)+4);
+    		
+    	   	/* write code for handling Exec */
+			/* ----------------------------*/
+			/* be careful to on and off interrupts at proper places */
+			/* ----------------------------*/
+			/* return the process id for the newly created process, return value
+			is to write at R2 */
+			Machine->WriteRegister(2, processed);
+			/* routine task – do at last -- generally manipulate PCReg,
+			PrevPCReg, NextPCReg so that they point to proper place*/
+			int pc;
+			pc=machine->ReadRegister(PCReg);
+			machine->WriteRegister(PrevPCReg,pc);
+			pc=machine->ReadRegister(NextPCReg);
+			machine->WriteRegister(PCReg,pc);
+			pc += 4;
+			machine->WriteRegister(NextPCReg,pc);
 			break;
 		
 		//BEGIN ADDED BY IAN BEATTY	

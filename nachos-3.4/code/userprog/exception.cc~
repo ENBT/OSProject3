@@ -34,6 +34,8 @@ static int SRead(int addr, int size, int id);
 static void SWrite(char *buffer, int size, int id);
 static void SExit(int status); //ADDED BY IAN BEATTY
 static void SYield(); //ADDED BY IAN BEATTY
+static void SExec(char *name);
+extern void StartProcess(char *file), ConsoleTest(char *in, char *out);
 
 // end FA98
 
@@ -95,6 +97,22 @@ ExceptionHandler(ExceptionType which)
 		
 
 		case SC_Exec :
+			printf("In exec\n");
+			int name = machine->ReadRegister(4);
+        	char *programName = new char[100];
+        	int i = 0; 
+        	int character = 1;
+        	while ((i < 98) && (character != 0)) {
+          		machine->ReadMem(name+i, 1, &character);
+          		programName[i++] = (char) character;
+        	}
+        	programName[i] = '\0';
+        	Thread *t = new Thread(programName);
+        	t->Fork(StartProcess(programName), 1);
+        	machine->WriteRegister(2, (int) t->getName());
+        	machine->WriteRegister(PrevPCReg, machine->ReadRegister(PCReg));
+    		machine->WriteRegister(PCReg, machine->ReadRegister(NextPCReg));
+    		machine->WriteRegister(NextPCReg, machine->ReadRegister(NextPCReg)+4);
 			break;
 		
 		//BEGIN ADDED BY IAN BEATTY	
@@ -274,7 +292,7 @@ static void SYield(){
 	printf("%s is after the Yield\n", currentThread->getName());
 }
 
-static SpaceId Exec(char *name){
+static SpaceId SExec(char *name){
 	// what the fuk do we write here????
 	// how does any of this work????
 	// ahhhhh
