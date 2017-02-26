@@ -16,8 +16,8 @@ int
 main()
 {
 	Write("bingo.c is running\n", 32, 1);
-	Exec("../test/halt");
-    Yield();
+	Write("bingo is calling uno\n", 32, 1);
+	Exec("../test/uno");
     Exit(0);
     /* not reached */
 }

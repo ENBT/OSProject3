@@ -63,6 +63,11 @@ extern void StartProcess(char *file), ConsoleTest(char *in, char *out);
 //----------------------------------------------------------------------
 
 void
+StartProcessHelper(int arg){
+	StartProcess((char *) arg);
+}
+
+void
 ExceptionHandler(ExceptionType which)
 {
 	int type = machine->ReadRegister(2);
@@ -97,27 +102,37 @@ ExceptionHandler(ExceptionType which)
 		
 
 		case SC_Exec :
-		/*
-			printf("In exec\n");
-			int name = machine->ReadRegister(4);
+			{
+			printf("Inside of exec");
         	char *programName = new char[100];
         	int i = 0; 
         	int character = 1;
         	while ((i < 98) && (character != 0)) {
-          		machine->ReadMem(name+i, 1, &character);
+          		machine->ReadMem(arg1+i, 1, &character);
           		programName[i++] = (char) character;
         	}
         	programName[i] = '\0';
         	Thread *t = new Thread(programName);
-        	t->Fork(StartProcess(programName), 1);
-        	machine->WriteRegister(2, (int) t->getName());
-        	machine->WriteRegister(PrevPCReg, machine->ReadRegister(PCReg));
-    		machine->WriteRegister(PCReg, machine->ReadRegister(NextPCReg));
-    		machine->WriteRegister(NextPCReg, machine->ReadRegister(NextPCReg)+4);
+        	t->Fork(StartProcessHelper, (int) programName);
     		
-    	   	*/
+			
+			/* be careful to on and off interrupts at proper places */
+			/* ----------------------------*/
+			
+			/* return the process id for the newly created process, return value
+			is to write at R2 */
+			machine->WriteRegister(2, 2); //2 is exec in syscall.h
+			/* routine task – do at last -- generally manipulate PCReg,
+			PrevPCReg, NextPCReg so that they point to proper place*/
+			int pc;
+			pc=machine->ReadRegister(PCReg);
+			machine->WriteRegister(PrevPCReg,pc);
+			pc=machine->ReadRegister(NextPCReg);
+			machine->WriteRegister(PCReg,pc);
+			pc += 4;
+			machine->WriteRegister(NextPCReg,pc);
 			break;
-		
+			}
 		//BEGIN ADDED BY IAN BEATTY	
 		case SC_Exit :
 			printf("In switch case type number: %d\n", type);
@@ -282,7 +297,7 @@ static void SExit(int status){
 	//we will need a way to identify threads
 	//if SExit can only be called if the status is 0 this check is redundant
 	if (status == 0){
-	printf("\n%s is calling SExit, status = %d\n", currentThread->getName(), status);
+	printf("%s is calling SExit, status = %d\n\n", currentThread->getName(), status);
 	currentThread->Finish(); //should clean up everything nicely
 	}
 }
@@ -295,13 +310,6 @@ static void SYield(){
 	printf("%s is after the Yield\n", currentThread->getName());
 }
 
-/*
-static SpaceId SExec(char *name){
-	// what the fuk do we write here????
-	// how does any of this work????
-	// ahhhhh
-}
-*/
 
 // end FA98
 

@@ -139,6 +139,10 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
 AddrSpace::~AddrSpace()
 {
+	for(int i = 0; i < numPages; i++){
+		map->Clear(i);
+	}
+	
 	delete pageTable;
 }
 

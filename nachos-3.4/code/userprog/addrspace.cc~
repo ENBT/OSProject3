@@ -24,7 +24,7 @@
 #include <strings.h>
 #endif
 
-BitMap *map;
+BitMap *map = new BitMap(NumPhysPages);
 //----------------------------------------------------------------------
 // SwapHeader
 // 	Do little endian to big endian conversion on the bytes in the 
@@ -61,10 +61,7 @@ SwapHeader(NoffHeader *noffH)
 //
 //	"executable" is the file containing the object code to load into memory
 //----------------------------------------------------------------------
-int ChangeMe(int vaddress)
-{
 
-}
 
 
 AddrSpace::AddrSpace(OpenFile *executable)
@@ -95,7 +92,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 	printf("Initializing address space, num pages %d, size %d, Physical Pages %d\n",
 		numPages, size, NumPhysPages);
 	// first, set up the translation
-	map = new BitMap(NumPhysPages);
+
 	map->Print();
 	printf("%d\n", map->NumClear());
 	pageTable = new TranslationEntry[numPages];
@@ -122,13 +119,13 @@ AddrSpace::AddrSpace(OpenFile *executable)
 	if (noffH.code.size > 0) {
 		DEBUG('a', "Initializing code segment, at 0x%x, size %d\n",
 			noffH.code.virtualAddr, noffH.code.size);
-		executable->ReadAt(&(machine->mainMemory[noffH.code.virtualAddr]),
+		executable->ReadAt(&(machine->mainMemory[ChangeMe(noffH.code.virtualAddr)]),
 			noffH.code.size, noffH.code.inFileAddr);
 	}
 	if (noffH.initData.size > 0) {
 		DEBUG('a', "Initializing data segment, at 0x%x, size %d\n",
 			noffH.initData.virtualAddr, noffH.initData.size);
-		executable->ReadAt(&(machine->mainMemory[noffH.initData.virtualAddr]),
+		executable->ReadAt(&(machine->mainMemory[ChangeMe(noffH.initData.virtualAddr)]),
 			noffH.initData.size, noffH.initData.inFileAddr);
 	}
 
@@ -142,6 +139,10 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
 AddrSpace::~AddrSpace()
 {
+	for(int i = 0; i < numPages; i++){
+		map->Clear(i);
+		}
+	
 	delete pageTable;
 }
 
@@ -201,3 +202,11 @@ void AddrSpace::RestoreState()
 	machine->pageTable = pageTable;
 	machine->pageTableSize = numPages;
 }
+//Changes Virtual Address into Physical Address
+int AddrSpace::ChangeMe(int vaddr)
+{
+	int physaddr = pageTable[vaddr / PageSize].physicalPage * PageSize + (vaddr % PageSize);
+	return physaddr;
+
+}
+

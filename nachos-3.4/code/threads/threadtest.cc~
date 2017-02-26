@@ -469,7 +469,7 @@ EatUpSem(int name) //Semaphore version is pretty much the same except for yknow 
     left = true;
     
     //****ADDED FOR REPORT
-    //currentThread->Yield();
+    currentThread->Yield();
     
     chop[(name + 1) % *philo]->P(); // same for the right chopstick
     printf("Philosopher %d picks up chopstick %d\n", name, ((name + 1) % *philo));
