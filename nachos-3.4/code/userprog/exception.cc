@@ -298,6 +298,7 @@ static void SExit(int status){
 	//if SExit can only be called if the status is 0 this check is redundant
 	if (status == 0){
 	printf("%s is calling SExit, status = %d\n\n", currentThread->getName(), status);
+	currentThread->space->~AddrSpace();
 	currentThread->Finish(); //should clean up everything nicely
 	}
 }

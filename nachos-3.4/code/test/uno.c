@@ -16,5 +16,7 @@ int
 main()
 {
 	Write("El bano es muy bonita\n", 100, 1);
+	Exec("../test/halt");
+	Exit(0);
     /* not reached */
 }

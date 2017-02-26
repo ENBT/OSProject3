@@ -103,7 +103,7 @@ ExceptionHandler(ExceptionType which)
 
 		case SC_Exec :
 			{
-			printf("In exec/////////////////\n");
+			printf("Inside of exec");
         	char *programName = new char[100];
         	int i = 0; 
         	int character = 1;
@@ -115,7 +115,6 @@ ExceptionHandler(ExceptionType which)
         	Thread *t = new Thread(programName);
         	t->Fork(StartProcessHelper, (int) programName);
     		
-    	   	/* write code for handling Exec */
 			
 			/* be careful to on and off interrupts at proper places */
 			/* ----------------------------*/
@@ -132,7 +131,6 @@ ExceptionHandler(ExceptionType which)
 			machine->WriteRegister(PCReg,pc);
 			pc += 4;
 			machine->WriteRegister(NextPCReg,pc);
-			printf("///////////%s\n", currentThread->getName());
 			break;
 			}
 		//BEGIN ADDED BY IAN BEATTY	
@@ -300,6 +298,7 @@ static void SExit(int status){
 	//if SExit can only be called if the status is 0 this check is redundant
 	if (status == 0){
 	printf("%s is calling SExit, status = %d\n\n", currentThread->getName(), status);
+	currentThread->space->~();
 	currentThread->Finish(); //should clean up everything nicely
 	}
 }
