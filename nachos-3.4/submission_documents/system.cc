@@ -19,7 +19,7 @@ Statistics *stats;			// performance metrics
 Timer *timer;				// the hardware timer device,
 					// for invoking context switches
 
-int whichOne; ////////////////////////ADDED BY STEVEN BABINEAUX////////////////////////
+int tasknumber = 0;	//Ian Beatty added this
 
 
 #ifdef FILESYS_NEEDED
@@ -110,43 +110,27 @@ Initialize(int argc, char **argv)
 						// number generator
 	    randomYield = TRUE;
 	    argCount = 2;
-	}
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-////////////CODE STARTED BY STEVEN BABINEAUX//////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////// 
-	else if (!strcmp(*argv, "-A")) {
-	    if(argc <= 1){
-	        printf("Not a valid input. Input 1 or 2.\n");
+	} else if(!strcmp(*argv, "-A")){ // Start Ian Beatty's code
+	    char* s = *(argv + 1);
+	    while(*(s + 1) == '\0'){
+		if(*s == '1'){
+		    //printf("Valid Input\n");
+		    tasknumber = 1;
+		    break;
+		}
+		if(*s == '2'){
+		    //printf("Valid Input\n");
+		    tasknumber = 2;
+		    break;
+		}
+		else{
+		    printf("Invalid!!\n"); 
+		    break;
+		    }
+		s++;
 	    }
-	    else if (!strcmp(*(argv + 1),"1")) {
-		whichOne = 1;
-	    }
-	    else if (!strcmp(*(argv + 1), "2")){
-		whichOne = 2;
-            }
-            else if (!strcmp(*(argv + 1), "3")){ 
-		whichOne = 3;
-            }
-            else if (!strcmp(*(argv + 1), "4")){ 
-		whichOne = 4;
-            }
-            else if (!strcmp(*(argv + 1), "5")){ 
-		whichOne = 5;
-            }
-            else if (!strcmp(*(argv + 1), "6")){ 
-		whichOne = 6;
-            }
-            else{
-                printf("Not a valid input. Input 1 or 2 or 3 or 4 or 5 or 6.\n"); 
-            }
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-////////////CODE ENDED BY STEVEN BABINEAUX////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
 	}
+// End Ian Beatty's code
 #ifdef USER_PROGRAM
 	if (!strcmp(*argv, "-s"))
 	    debugUserProg = TRUE;

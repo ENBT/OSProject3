@@ -1,0 +1,93 @@
+Ian Beatty imb4769 c00187479
+CMPS 455 Spring 2017
+
+
+Task 1
+
+1. The ability to check input is important because it allows us to give the user
+   feedback if their input is invalid by throwing an error, instead of letting 
+   the program segmentation fault or end without notice.
+2. Bad input that isn't caught when its entered could cause a program to continue
+   asking for input and lengthening the time before the user is told they made a 
+   mistake. This creates a bad user experience. Typing input when not prompted
+   could cause vital processes to be interrupted and the program to crash.
+
+Task 2
+
+1. Taking out the busy waiting loop makes each thread finish its 5 shouts before
+   moving on to the next thread. Whereas if I make each thread yield exactly
+   once after shouting then each thread shouts once then waits for all other 
+   threads to shout before going again in the same order.
+   
+2. Taking out the input validation doesn't give the user any feedback as to why
+   the program didn't give any output. Generally this makes for a bad user 
+   experience.
+
+Task 3
+
+1. Other solutions could be simply exiting everything and closing the command line.
+   This creates a terrible user experience but it IS a solution. More resonable
+   solutions are prompting the user to reenter their input, or telling the user 
+   what was wrong with their input.
+   
+Task 4
+
+1. I implemented task 1 by taking the user input and storing it in a character 
+   array. Then I created a char and set it equal to the first element in the
+   array. Then, in a while loop, I checked if that char was an integer, decimal
+   point, or something else. If it was something else the loop was broken and 
+   the input was declared a character string. If it was a decimal point or an
+   integer the loop continues until the '\0' character was reached. I made edge
+   cases for if the character array started with a '-' which meant that the input
+   was negitive or a '.' which meant that the input was a character string.
+   Booleans were used to store what type the input was.
+   
+   I implemented task 2 by taking user input for number of threads and number of
+   shouts. Then using logic from task 1 I checked if the input was a non-zero
+   integer. After that, in a for loop, I forked a new thread to execute the shout
+   funtion, that function was passed the number of shouts the user entered. The
+   shout funtion will then pick a random phrase from a array of 5 phrases and
+   print it. Finally the shout function picks a random number between 2 and 5 and
+   yeilds that many times before shouting again. 
+   
+   I implemented task 3 by defining "-A" to be a command in nachos. After reading
+   "-A" from the command line the program then looks for either the char array
+   "\0" or "2\0". Depending on the input the global variable "int tasknumber" will
+   be set and it will start either task 1 or task 2.
+   
+   Some bugs I encountered were when implementing the array of phrases for Task 2
+   I didn't allocate enough space for the length of my phrases and that gave me 
+   a segmentation fault for a while. I eventually found it when I rewrote the
+   array to just have single words in it as a test and my program worked. I also
+   had a bug where if you enter a number with a '0' in it during Task 2, the
+   program will output "Invalid!!!" but the program actually works as entended.
+   This was because I made an edge case were '0' was an invalid input for the
+   case were the user enters just a '0' or starts a number with a '0'. I fixed
+   it by added in anothe case for if the input was '0' and not the first character.
+   
+   Finally I would like to add that 
+   
+2. I learned how threads are able to start, pause, and resume different processes
+   to be able to peform differnet tasks concurrently. I also now understand how 
+   the ready queue works and when things get added to it taken out of it.
+   Finally I got to practice and more fully understand how to create commands for
+   the command line.
+   
+3. The only data structure I used was a simple one dimensional array. And the only
+   algorithm I used was a loop to determine what data type a user entered. Either
+   Neg Int, Neg Dec, Int, Dec, or character string.
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   

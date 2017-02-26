@@ -246,6 +246,13 @@ void
      *Edit = false; // set it back to false as i have completed picking up chopsticks
     }  
         //Interrupt here forever everyone gets left
+    
+    
+    //***ADDED FOR REPORT
+    //currentThread->Yield();
+    
+    
+    
       
     while(!stick[(name+1) % *philo]){
       currentThread->Yield();
@@ -460,6 +467,10 @@ EatUpSem(int name) //Semaphore version is pretty much the same except for yknow 
     chop[name]->P(); // Have the chopstick to my left be put on wait if its unavailbe. otherwise take it and the value of that resource will be 0
     printf("Philosopher %d picks up chopstick %d\n", name, name);
     left = true;
+    
+    //****ADDED FOR REPORT
+    currentThread->Yield();
+    
     chop[(name + 1) % *philo]->P(); // same for the right chopstick
     printf("Philosopher %d picks up chopstick %d\n", name, ((name + 1) % *philo));
     right = true;
@@ -737,7 +748,7 @@ task5(int which){
         	        if (messagesToSend > 0){
                             otherMailboxFull = false;
                             mailboxes[randomPerson][i] = 1;
-                            printf("Person %d sent mail to person %d in slot %d and they had to retry %d times\n", which, randomPerson, i, numberOfTries); 
+                            printf("Person %d sent mail to person %d in slot %d and it said %d, had to retry %d times\n", which, randomPerson, i, mailboxes[randomPerson][i], numberOfTries); 
                             messagesToSend--;
                         }
                         // This is a lie to make us stop sending mail
@@ -784,7 +795,6 @@ task6(int which){
         // START using the mailbox
     	// Check for mail in every slot, and read found mail
     	isMail = true;//because a person should assume there is mail when going to post office
-    	
     	while(isMail){
     	    int slotThatHasMail = -1;
     	    for (int i = 0; i < mailboxSize; i++){ //mailboxes[which] is a person's specific mailbox
@@ -976,74 +986,43 @@ ThreadTest()
 //////////////////////////////////////////////////////////////////////////
     
     else if(whichOne == 5){
-        
-        peopleParticipating1:
+        char string[100];
+        bool check = false;
+        while(check == false){
             printf("Enter number of people participating in simulation(2 - 10,000): ");
-            char *inp = new char(10); // writer variable takes in input
-  	    bool valid = true;
-  	    fgets(inp, 10, stdin);
-  	    inp[strlen(inp) - 1] = '\0';
-  	    char *read = inp; // reader variable, reads that input
-  	    while(*read != '\0'){
-                if(!(*read >= '0' || *read <= '9') || *read == ' '){ // if its not a numeral turn valid to false and just break us out of the checks, we dont need to check any more
-      		    valid = false;
-        	    break;  
-   	        }
-   	    read++;
-  	    }
-  	    if(atoi(inp) < 2 || atoi(inp) > 10000)
-                valid = false;
-            if(!valid){
-                printf("Invalid Input! Try Again!\n");
-                goto peopleParticipating1;
+            scanf("%s", string); //something something scanf
+            numPeople = atoi(string);
+            if(numPeople <= 1 || numPeople > 10000){
+                printf("Invalid Input, please try again.\n");
             }
-            numPeople = atoi(inp);
-        
-        numberOfMessages1:
+            else if(numPeople > 1 || numPeople < 10000){
+                check = true;
+            }
+        }
+        check = false;
+        while(check == false){
             printf("Enter number of messages a mailbox can hold(1 - 10,000): ");
-            char *mailboxInp = new char(10); // writer variable takes in input
-  	    valid = true;
-  	    fgets(mailboxInp, 10, stdin);
-  	    inp[strlen(mailboxInp) - 1] = '\0';
-  	    read = mailboxInp; // reader variable, reads that input
-  	    while(*read != '\0'){
-                if(!(*read >= '0' || *read <= '9') || *read == ' '){ // if its not a numeral turn valid to false and just break us out of the checks, we dont need to check any more
-      		    valid = false;
-        	    break;  
-   	        }
-   	    read++;
-  	    }
-  	    if(atoi(mailboxInp) < 1 || atoi(mailboxInp) > 10000)
-                valid = false;
-            if(!valid){
-                printf("Invalid Input! Try Again!\n");
-                goto numberOfMessages1;
+            scanf("%s", string); //something something scanf
+            mailboxSize = atoi(string);
+            if(mailboxSize <= 0 || mailboxSize > 10000){
+                printf("Invalid Input, please try again.\n");
             }
-            mailboxSize = atoi(mailboxInp);
-            
-        messagesToSend1:
+            else if(mailboxSize > 0 || mailboxSize < 10000){
+                check = true;
+            }
+        }
+        check = false;
+        while(check == false){
             printf("Enter number of total messages that will be sent(1 - 10,000): ");
-            char *messageInp = new char(10); // writer variable takes in input
-  	    valid = true;
-  	    fgets(messageInp, 10, stdin);
-  	    inp[strlen(messageInp) - 1] = '\0';
-  	    read = messageInp; // reader variable, reads that input
-  	    while(*read != '\0'){
-                if(!(*read >= '0' || *read <= '9') || *read == ' '){ // if its not a numeral turn valid to false and just break us out of the checks, we dont need to check any more
-      		    valid = false;
-        	    break;  
-   	        }
-   	    read++;
-  	    }
-  	    if(atoi(messageInp) < 1 || atoi(messageInp) > 10000)
-                valid = false;
-            if(!valid){
-                printf("Invalid Input! Try Again!\n");
-                goto messagesToSend1;
+            scanf("%s", string); //something something scanf
+            messagesToSend = atoi(string);
+            if(messagesToSend <= 0 || messagesToSend > 10000){
+                printf("Invalid Input, please try again.\n");
             }
-            messagesToSend = atoi(messageInp);
-
-        
+            else if(messagesToSend > 0 || messagesToSend < 10000){
+                check = true;
+            }
+        }
         messagesToRead = messagesToSend;
         // Set up the mailboxes
         mailboxes = new int*[numPeople];
@@ -1067,72 +1046,44 @@ ThreadTest()
 	    t->Fork(task5, i);
         }
     }
-    else if(whichOne == 6){    
-        peopleParticipating:
+    else if(whichOne == 6){
+        char string[100];
+        bool check = false;
+        while(check == false){
             printf("Enter number of people participating in simulation(2 - 10,000): ");
-            char *inp = new char(10); // writer variable takes in input
-  	    bool valid = true;
-  	    fgets(inp, 10, stdin);
-  	    inp[strlen(inp) - 1] = '\0';
-  	    char *read = inp; // reader variable, reads that input
-  	    while(*read != '\0'){
-                if(!(*read >= '0' || *read <= '9') || *read == ' '){ // if its not a numeral turn valid to false and just break us out of the checks, we dont need to check any more
-      		    valid = false;
-        	    break;  
-   	        }
-   	    read++;
-  	    }
-  	    if(atoi(inp) < 2 || atoi(inp) > 10000)
-                valid = false;
-            if(!valid){
-                printf("Invalid Input! Try Again!\n");
-                goto peopleParticipating;
+            scanf("%s", string); //something something scanf
+            numPeople = atoi(string);
+            if(numPeople <= 1 || numPeople > 10000){
+                printf("Invalid Input, please try again.\n");
             }
-            numPeople = atoi(inp);
-        
-        numberOfMessages:
+            else if(numPeople > 1 || numPeople < 10000){
+                check = true;
+            }
+        }
+        check = false;
+        while(check == false){
             printf("Enter number of messages a mailbox can hold(1 - 10,000): ");
-            char *mailboxInp = new char(10); // writer variable takes in input
-  	    valid = true;
-  	    fgets(mailboxInp, 10, stdin);
-  	    inp[strlen(mailboxInp) - 1] = '\0';
-  	    read = mailboxInp; // reader variable, reads that input
-  	    while(*read != '\0'){
-                if(!(*read >= '0' || *read <= '9') || *read == ' '){ // if its not a numeral turn valid to false and just break us out of the checks, we dont need to check any more
-      		    valid = false;
-        	    break;  
-   	        }
-   	    read++;
-  	    }
-  	    if(atoi(mailboxInp) < 1 || atoi(mailboxInp) > 10000)
-                valid = false;
-            if(!valid){
-                printf("Invalid Input! Try Again!\n");
-                goto numberOfMessages;
+            scanf("%s", string); //something something scanf
+            mailboxSize = atoi(string);
+            if(mailboxSize <= 0 || mailboxSize > 10000){
+                printf("Invalid Input, please try again.\n");
             }
-            mailboxSize = atoi(mailboxInp);
-            
-        messagesToSend:
+            else if(mailboxSize > 0 || mailboxSize < 10000){
+                check = true;
+            }
+        }
+        check = false;
+        while(check == false){
             printf("Enter number of total messages that will be sent(1 - 10,000): ");
-            char *messageInp = new char(10); // writer variable takes in input
-  	    valid = true;
-  	    fgets(messageInp, 10, stdin);
-  	    inp[strlen(messageInp) - 1] = '\0';
-  	    read = messageInp; // reader variable, reads that input
-  	    while(*read != '\0'){
-                if(!(*read >= '0' || *read <= '9') || *read == ' '){ // if its not a numeral turn valid to false and just break us out of the checks, we dont need to check any more
-      		    valid = false;
-        	    break;  
-   	        }
-   	    read++;
-  	    }
-  	    if(atoi(messageInp) < 1 || atoi(messageInp) > 10000)
-                valid = false;
-            if(!valid){
-                printf("Invalid Input! Try Again!\n");
-                goto messagesToSend;
+            scanf("%s", string); //something something scanf
+            messagesToSend = atoi(string);
+            if(messagesToSend <= 0 || messagesToSend > 10000){
+                printf("Invalid Input, please try again.\n");
             }
-            messagesToSend = atoi(messageInp);
+            else if(messagesToSend > 0 || messagesToSend < 10000){
+                check = true;
+            }
+        }
         
         messagesToRead = messagesToSend;
         
