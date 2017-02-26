@@ -97,6 +97,7 @@ ExceptionHandler(ExceptionType which)
 		
 
 		case SC_Exec :
+		/*
 			printf("In exec\n");
 			int name = machine->ReadRegister(4);
         	char *programName = new char[100];
@@ -114,22 +115,7 @@ ExceptionHandler(ExceptionType which)
     		machine->WriteRegister(PCReg, machine->ReadRegister(NextPCReg));
     		machine->WriteRegister(NextPCReg, machine->ReadRegister(NextPCReg)+4);
     		
-    	   	/* write code for handling Exec */
-			/* ----------------------------*/
-			/* be careful to on and off interrupts at proper places */
-			/* ----------------------------*/
-			/* return the process id for the newly created process, return value
-			is to write at R2 */
-			Machine->WriteRegister(2, processed);
-			/* routine task – do at last -- generally manipulate PCReg,
-			PrevPCReg, NextPCReg so that they point to proper place*/
-			int pc;
-			pc=machine->ReadRegister(PCReg);
-			machine->WriteRegister(PrevPCReg,pc);
-			pc=machine->ReadRegister(NextPCReg);
-			machine->WriteRegister(PCReg,pc);
-			pc += 4;
-			machine->WriteRegister(NextPCReg,pc);
+    	   	*/
 			break;
 		
 		//BEGIN ADDED BY IAN BEATTY	
@@ -309,11 +295,13 @@ static void SYield(){
 	printf("%s is after the Yield\n", currentThread->getName());
 }
 
+/*
 static SpaceId SExec(char *name){
 	// what the fuk do we write here????
 	// how does any of this work????
 	// ahhhhh
 }
+*/
 
 // end FA98
 

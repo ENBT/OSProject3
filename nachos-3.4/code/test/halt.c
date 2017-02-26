@@ -15,7 +15,7 @@
 int
 main()
 {
-	Write("Inside of halt.o\n", 32, 1);
+
     Halt();
     /* not reached */
 }
