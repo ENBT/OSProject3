@@ -65,6 +65,8 @@ extern void StartProcess(char *file), ConsoleTest(char *in, char *out);
 void
 StartProcessHelper(int arg){
 	StartProcess((char *) arg);
+	printf("The id for file, %s is: %d\n", (char *)arg, currentThread->getID());
+	machine->WriteRegister(2, currentThread->getID());
 }
 
 void
@@ -103,7 +105,7 @@ ExceptionHandler(ExceptionType which)
 
 		case SC_Exec :
 			{
-			printf("Inside of exec");
+			//printf("Inside of exec");
         	char *programName = new char[100];
         	int i = 0; 
         	int character = 1;
@@ -112,8 +114,8 @@ ExceptionHandler(ExceptionType which)
           		programName[i++] = (char) character;
         	}
         	programName[i] = '\0';
-        	Thread *t = new Thread(programName);
-        	t->Fork(StartProcessHelper, (int) programName);
+        	
+        	StartProcessHelper((int) programName);
     		
 			
 			/* be careful to on and off interrupts at proper places */
@@ -121,7 +123,7 @@ ExceptionHandler(ExceptionType which)
 			
 			/* return the process id for the newly created process, return value
 			is to write at R2 */
-			machine->WriteRegister(2, 2); //2 is exec in syscall.h
+			//machine->WriteRegister(2, 2); //2 is exec in syscall.h
 			/* routine task – do at last -- generally manipulate PCReg,
 			PrevPCReg, NextPCReg so that they point to proper place*/
 			int pc;
@@ -135,21 +137,22 @@ ExceptionHandler(ExceptionType which)
 			}
 		//BEGIN ADDED BY IAN BEATTY	
 		case SC_Exit :
-			printf("In switch case type number: %d\n", type);
-			printf("arg1 = %d\n", arg1);
+			//printf("In switch case type number: %d\n", type);
+			//printf("arg1 = %d\n", arg1);
 			if(arg1 == 0){
-				printf("in if statment arg1 = %d\n", arg1);
+				//printf("in if statment arg1 = %d\n", arg1);
 				SExit(arg1);
 			}
 			break;
 			
 		case SC_Yield :
-			printf("In switch case type number: %d\n", type);
+			//printf("In switch case type number: %d\n", type);
 			SYield();
 			break;
 			//END ADDED BY IAN BEATTY	
 		
 		case SC_Join :
+			
 			break;
 			
 		

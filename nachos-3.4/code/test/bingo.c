@@ -14,10 +14,10 @@
 
 int
 main()
-{
+{	int stat;
 	Write("bingo.c is running\n", 32, 1);
-	Write("bingo is calling uno\n", 32, 1);
-	Exec("../test/uno");
+	stat = Exec("../test/uno");
+	Write((char*)stat, 10,1);
 	Yield();
     Exit(0);
     /* not reached */
