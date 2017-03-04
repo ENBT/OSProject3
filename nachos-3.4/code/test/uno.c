@@ -18,6 +18,7 @@ main()
 	int id;
 	Exec("../test/matmult");
 	id = Exec("../test/boi");
+	Join(id);
 	Write(" El bano es muy bonita\n", 100, 1);
 	
     /* not reached */

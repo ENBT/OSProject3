@@ -37,6 +37,8 @@ static void SYield(); //ADDED BY IAN BEATTY
 static SpaceId SExec(char* name);
 extern void StartProcess(char *file), ConsoleTest(char *in, char *out);
 extern void CreateProcess(int arg);
+extern Thread* getThreadbyID(int id);
+
 
 // end FA98
 
@@ -117,28 +119,7 @@ ExceptionHandler(ExceptionType which)
         	}
         	machine->WriteRegister(2, result);
         	printf("The thing inside of Register 2 is: %d\n", machine->ReadRegister(2));
-        	
-        	
-    		
-			
-			/* be careful to on and off interrupts at proper places */
-			/* ----------------------------*/
-			
-			/* return the process id for the newly created process, return value
-			is to write at R2 */
-			//machine->WriteRegister(2, 2); //2 is exec in syscall.h
-			/* routine task – do at last -- generally manipulate PCReg,
-			
-			PrevPCReg, NextPCReg so that they point to proper place*/
-			/*
-			int pc;
-			pc=machine->ReadRegister(PCReg);
-			machine->WriteRegister(PrevPCReg,pc);
-			pc=machine->ReadRegister(NextPCReg);
-			machine->WriteRegister(PCReg,pc);
-			pc += 4;
-			machine->WriteRegister(NextPCReg,pc);
-			*/
+
 			break;
 			
 			}
@@ -159,7 +140,18 @@ ExceptionHandler(ExceptionType which)
 			//END ADDED BY IAN BEATTY	
 		
 		case SC_Join:
-			//make a new thread of the parent. Send the parent to the shadow realm. Bring em back after the deed is done
+		{
+			printf("Thread: %d is calling to join a process thread: %d\n", currentThread->getID(),
+			 machine->ReadRegister(2));
+			
+			Thread * newproc = getThreadbyID(machine->ReadRegister(2));
+			printf("The id for this Thread is %d\n", newproc->getID());
+			newproc->parent = getThreadbyID(currentThread->getID();
+			interrupt->SetLevel(IntOff);
+			newproc->parent->setStatus(BLOCKED);
+			interrupt->SetLevel(IntOn);
+			
+		}	
 			break;
 			
 		
@@ -306,6 +298,9 @@ static void SWrite(char *buffer, int size, int id)
 static void SExit(int status){
 	//we will need a way to identify threads
 	//if SExit can only be called if the status is 0 this check is redundant
+	if(currentThread->parent != NULL){
+		printf("Thread's Parent is: %d\n", currentThread->parent->getID());
+		currentThread->parent->setStatus(READY);
 	if (status == 0){
 	printf("%s is calling SExit, status = %d\n\n", currentThread->getName(), status);
 	currentThread->space->~AddrSpace();
@@ -314,7 +309,10 @@ static void SExit(int status){
 	else{
 		printf("User Program: %s did not exit normally\n", currentThread->getName());
 		currentThread->space->~AddrSpace();
+		
 		currentThread->Finish();
+	}
+	
 	}
 }
 
@@ -327,7 +325,9 @@ static void SYield(){
 }
 
 /*
-
+	SExec will return the number of the thread id. If the process failed to allocate memory prorperly
+	or if the file does not exst, return a value of -1 signalling that this process cannot run.
+	Handle disposing of process in syscall handling.
 */
 
 static SpaceId SExec(char* name){
@@ -361,6 +361,18 @@ static SpaceId SExec(char* name){
     delete executable;	
     
 	return id;
+}
+
+static int SJoin(SpaceId id){
+	
+
+
+
+
+
+
+
+
 }
 
 // end FA98

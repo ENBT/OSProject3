@@ -103,6 +103,11 @@ class Thread {
     char* getName() { return (name); }
     void Print() { printf("%s, ", name); }
     int getID(){ return id; }
+    int GetFirstEmptyIndex(); //ADDED FOR PROJECT 3
+    void FillThreadArray(Thread* t);
+    void setParent(int id);
+   // Thread* getThreadbyID(int id);
+    Thread * parent;
     
 
   private:
@@ -114,6 +119,7 @@ class Thread {
 					// (If NULL, don't deallocate stack)
     ThreadStatus status;		// ready, running or blocked
     char* name;
+    
 
     void StackAllocate(VoidFunctionPtr func, int arg);
     					// Allocate a stack for thread.

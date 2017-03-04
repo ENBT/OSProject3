@@ -26,6 +26,7 @@
 					// stack overflows
 					
 extern int  * threadCount;
+Thread* threadArray[10000]; 	//big array of threads
 //----------------------------------------------------------------------
 // Thread::Thread
 // 	Initialize a thread control block, so that we can then call
@@ -36,17 +37,57 @@ extern int  * threadCount;
 
 Thread::Thread(char* threadName)
 {
-	threadCount += 1;
-	id = threadCount;
-	
+	parent = NULL;
+	*threadCount += 1;
+	id = *threadCount;
     name = threadName;
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
+    FillThreadArray(this);
 #ifdef USER_PROGRAM
     space = NULL;
 #endif
 }
+
+int
+Thread::GetFirstEmptyIndex(){
+	for(int i = 0; i < 10000; i++){
+		if(threadArray[i] == NULL) return i;
+	}
+	return -1;
+}
+
+void
+Thread::FillThreadArray(Thread* t){
+	int slotToFill = GetFirstEmptyIndex();
+	if(slotToFill != -1){
+		threadArray[slotToFill] = t;
+	}
+}
+
+void Thread::setParent(int id){
+	for(int i = 0; i < 10000; i++){
+		if(threadArray[i]->getID() == id){
+			parent == threadArray[i];
+			return;
+		}
+		printf("Couldnt Find that Parent\n");
+		return;
+	}
+}
+
+Thread*
+Thread::getThreadbyID(int id){
+	for(int i = 0; i <10000; i++){
+		if(threadArray[i]->getID() == id){
+			return threadArray[i];
+		}
+	}
+	return NULL;
+}
+
+
 
 //----------------------------------------------------------------------
 // Thread::~Thread
@@ -322,4 +363,6 @@ Thread::RestoreUserState()
     for (int i = 0; i < NumTotalRegs; i++)
 	machine->WriteRegister(i, userRegisters[i]);
 }
+
+
 #endif
