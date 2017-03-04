@@ -111,6 +111,10 @@ ExceptionHandler(ExceptionType which)
         	}
         	programName[i] = '\0';
         	int result = SExec(programName);
+        	if(result == -1){
+        		printf("error with execution\n");
+        		break;
+        	}
         	machine->WriteRegister(2, result);
         	printf("The thing inside of Register 2 is: %d\n", machine->ReadRegister(2));
         	
@@ -338,6 +342,11 @@ static SpaceId SExec(char* name){
 	return -1;
     }
     space = new AddrSpace(executable);    
+    if(space == NULL){
+    	printf("Not enough Space\n");
+    	delete executable;
+    	return -1;
+    }
     //currentThread->space = space;
     Thread *t = new Thread(filename);
     t->space = space;

@@ -92,18 +92,18 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
 	DEBUG('a', "Initializing address space, num pages %d, size %d\n",
 		numPages, size);
-	printf("Initializing address space, num pages %d, size %d, Physical Pages %d\n",
-		numPages, size, NumPhysPages);
+	printf("Initializing address space, num pages %d, size %d, Physical Pages Available %d\n",
+		numPages, size, map->NumClear()); 
 	// first, set up the translation
 	if(numPages > map->NumClear())
 	{
 		printf("Sorry bud, not enough memory. Nothing Personal.\n");
-		currentThread->Finish();
+	return;
 	}
 
 	
 	map->Print();
-	printf("%d\n", map->NumClear());
+	
 	pageTable = new TranslationEntry[numPages];
 	for (i = 0; i < numPages; i++) {
 		pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
