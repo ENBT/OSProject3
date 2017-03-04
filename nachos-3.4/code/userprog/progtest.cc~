@@ -14,6 +14,19 @@
 #include "addrspace.h"
 #include "synch.h"
 
+
+
+
+void
+CreateProcess(int arg)
+{
+currentThread->space->InitRegisters();
+currentThread->space->RestoreState();
+machine->WriteRegister(2, currentThread->getID());
+
+machine->Run();
+ASSERT(FALSE);
+}
 //----------------------------------------------------------------------
 // StartProcess
 // 	Run a user program.  Open the executable, load it into
@@ -31,18 +44,17 @@ StartProcess(char *filename)
 	return;
     }
     space = new AddrSpace(executable);    
-    currentThread->space = space;
+    //currentThread->space = space;
+    Thread *t = new Thread(filename);
+    t->space = space;
+    t->Fork(CreateProcess, 0);
 
     delete executable;			// close file
 
-    space->InitRegisters();		// set the initial register values
-    space->RestoreState();		// load page table register
-
-    machine->Run();			// jump to the user progam
-    ASSERT(FALSE);			// machine->Run never returns;
-					// the address space exits
-					// by doing the syscall "exit"
+    
 }
+
+
 
 // Data structures needed for the console test.  Threads making
 // I/O requests wait on a Semaphore to delay until the I/O completes.

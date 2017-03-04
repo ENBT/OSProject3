@@ -34,8 +34,9 @@ static int SRead(int addr, int size, int id);
 static void SWrite(char *buffer, int size, int id);
 static void SExit(int status); //ADDED BY IAN BEATTY
 static void SYield(); //ADDED BY IAN BEATTY
-static void SExec(char *name);
+static SpaceId SExec(char* name);
 extern void StartProcess(char *file), ConsoleTest(char *in, char *out);
+extern void CreateProcess(int arg);
 
 // end FA98
 
@@ -62,12 +63,7 @@ extern void StartProcess(char *file), ConsoleTest(char *in, char *out);
 //	are in machine.h.
 //----------------------------------------------------------------------
 
-void
-StartProcessHelper(int arg){
-	StartProcess((char *) arg);
-	printf("The id for file, %s is: %d\n", (char *)arg, currentThread->getID());
-	machine->WriteRegister(2, currentThread->getID());
-}
+
 
 void
 ExceptionHandler(ExceptionType which)
@@ -114,8 +110,11 @@ ExceptionHandler(ExceptionType which)
           		programName[i++] = (char) character;
         	}
         	programName[i] = '\0';
+        	int result = SExec(programName);
+        	machine->WriteRegister(2, result);
+        	printf("The thing inside of Register 2 is: %d\n", machine->ReadRegister(2));
         	
-        	StartProcessHelper((int) programName);
+        	
     		
 			
 			/* be careful to on and off interrupts at proper places */
@@ -125,7 +124,9 @@ ExceptionHandler(ExceptionType which)
 			is to write at R2 */
 			//machine->WriteRegister(2, 2); //2 is exec in syscall.h
 			/* routine task – do at last -- generally manipulate PCReg,
+			
 			PrevPCReg, NextPCReg so that they point to proper place*/
+			/*
 			int pc;
 			pc=machine->ReadRegister(PCReg);
 			machine->WriteRegister(PrevPCReg,pc);
@@ -133,7 +134,9 @@ ExceptionHandler(ExceptionType which)
 			machine->WriteRegister(PCReg,pc);
 			pc += 4;
 			machine->WriteRegister(NextPCReg,pc);
+			*/
 			break;
+			
 			}
 		//BEGIN ADDED BY IAN BEATTY	
 		case SC_Exit :
@@ -151,8 +154,8 @@ ExceptionHandler(ExceptionType which)
 			break;
 			//END ADDED BY IAN BEATTY	
 		
-		case SC_Join :
-			
+		case SC_Join:
+			//make a new thread of the parent. Send the parent to the shadow realm. Bring em back after the deed is done
 			break;
 			
 		
@@ -304,6 +307,11 @@ static void SExit(int status){
 	currentThread->space->~AddrSpace();
 	currentThread->Finish(); //should clean up everything nicely
 	}
+	else{
+		printf("User Program: %s did not exit normally\n", currentThread->getName());
+		currentThread->space->~AddrSpace();
+		currentThread->Finish();
+	}
 }
 
 //ADDED BY IAN BEATTY
@@ -314,6 +322,33 @@ static void SYield(){
 	printf("%s is after the Yield\n", currentThread->getName());
 }
 
+static SpaceId SExec(char* name){
+	
+	char* filename = name;
+	
+	
+	
+	//StartProcess((char *) arg);
+	
+	OpenFile *executable = fileSystem->Open(filename);
+    AddrSpace *space;
+
+    if (executable == NULL) {
+	printf("Unable to open file %s\n", filename);
+	return -1;
+    }
+    space = new AddrSpace(executable);    
+    //currentThread->space = space;
+    Thread *t = new Thread(filename);
+    t->space = space;
+    t->Fork(CreateProcess, 0);
+    int id = t->getID();
+    printf("The id for file, %s is: %d\n", name, id);
+
+    delete executable;	
+    
+	return id;
+}
 
 // end FA98
 

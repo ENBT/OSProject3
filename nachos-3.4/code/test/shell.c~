@@ -27,7 +27,7 @@ main()
 	buffer[--i] = '\0';
 
 	if( i > 0 ) {
-	Write("Man\n", 20, 1);
+	Write("Man\n", 20, );
 		newProc = Exec(buffer);
 		Join(newProc);
 	}

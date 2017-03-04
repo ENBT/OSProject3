@@ -78,8 +78,7 @@ extern int * threadCount;
 int
 main(int argc, char **argv)
 {
-	threadCount = new int();
-	    	*threadCount = 0;
+
     int argCount;			// the number of arguments 
 					// for a particular command
 
@@ -99,7 +98,8 @@ main(int argc, char **argv)
 
         if (!strcmp(*argv, "-x")) {        	// run a user program
 	    ASSERT(argc > 1);
-	    	
+	    	threadCount = new int();
+	    	*threadCount = 0;
             StartProcess(*(argv + 1));
             argCount = 2;
             

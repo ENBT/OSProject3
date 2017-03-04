@@ -15,8 +15,10 @@
 int
 main()
 {
-	Write("El bano es muy bonita\n", 100, 1);
-	Exec("../test/halt");
-	Exit(0);
+	int id;
+	Exec("../test/matmult");
+	id = Exec("../test/boi");
+	Write(" El bano es muy bonita\n", 100, 1);
+	
     /* not reached */
 }

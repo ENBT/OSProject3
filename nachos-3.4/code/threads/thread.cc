@@ -19,13 +19,13 @@
 #include "switch.h"
 #include "synch.h"
 #include "system.h"
-extern int countmeup;
+
 
 #define STACK_FENCEPOST 0xdeadbeef	// this is put at the top of the
 					// execution stack, for detecting 
 					// stack overflows
 					
-
+extern int  * threadCount;
 //----------------------------------------------------------------------
 // Thread::Thread
 // 	Initialize a thread control block, so that we can then call
@@ -36,8 +36,8 @@ extern int countmeup;
 
 Thread::Thread(char* threadName)
 {
-	countmeup += 1;
-	id = countmeup; 
+	*threadCount += 1;
+	id = *threadCount;
 	
     name = threadName;
     stackTop = NULL;
@@ -63,7 +63,7 @@ Thread::Thread(char* threadName)
 Thread::~Thread()
 {
     DEBUG('t', "Deleting thread \"%s\"\n", name);
-	countmeup -= 1;
+	
     ASSERT(this != currentThread);
     if (stack != NULL)
 	DeallocBoundedArray((char *) stack, StackSize * sizeof(int));

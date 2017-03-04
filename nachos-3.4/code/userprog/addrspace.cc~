@@ -68,6 +68,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 {
 	NoffHeader noffH;
 	unsigned int i, size;
+	
 
 	executable->ReadAt((char *)&noffH, sizeof(noffH), 0);
 	if ((noffH.noffMagic != NOFFMAGIC) &&
@@ -80,19 +81,27 @@ AddrSpace::AddrSpace(OpenFile *executable)
 		+ UserStackSize;	// we need to increase the size
 							// to leave room for the stack
 	numPages = divRoundUp(size, PageSize);
+	
 	size = numPages * PageSize;
 
 	ASSERT(numPages <= NumPhysPages);		// check we're not trying
 											// to run anything too big --
 											// at least until we have
 											// virtual memory
+											
 
 	DEBUG('a', "Initializing address space, num pages %d, size %d\n",
 		numPages, size);
 	printf("Initializing address space, num pages %d, size %d, Physical Pages %d\n",
 		numPages, size, NumPhysPages);
 	// first, set up the translation
+	if(numPages > map->NumClear())
+	{
+		printf("Sorry bud, not enough memory. Nothing Personal.\n");
+		currentThread->Finish();
+	}
 
+	
 	map->Print();
 	printf("%d\n", map->NumClear());
 	pageTable = new TranslationEntry[numPages];
@@ -154,7 +163,7 @@ AddrSpace::~AddrSpace()
 		
 	for(; z < pnum; z++){
 		map->Clear(z);
-		printf("Deleting Page: %d",z);
+		printf("Deleting Page: %d\n",z);
 		}
 			
 	

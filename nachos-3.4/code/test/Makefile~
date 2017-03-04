@@ -35,18 +35,25 @@ CPP = gcc -E
 INCDIR =-I../userprog -I../threads
 CFLAGS = -G 0 -c $(INCDIR)
 
-all: halt shell matmult sort bingo
+all: halt shell matmult sort bingo uno boi
 
 start.o: start.s ../userprog/syscall.h
 	$(CPP) $(CPPFLAGS) start.c > strt.s
 	$(AS) $(ASFLAGS) -o start.o strt.s
 	rm strt.s
 
+Boi.o: Boi.c
+	$(CC) $(CFLAGS) -c Boi.c
+Boi: Boi.o start.o
+	$(LD) $(LDFLAGS) start.o Boi.o -o Boi.coff
+	../bin/coff2noff Boi.coff Boi
+	
 halt.o: halt.c
 	$(CC) $(CFLAGS) -c halt.c
 halt: halt.o start.o
 	$(LD) $(LDFLAGS) start.o halt.o -o halt.coff
-	../bin/coff2noff halt.coff halt
+	../bin/coff2noff halt.coff halt	
+	
 
 bingo.o: bingo.c
 	$(CC) $(CFLAGS) -c bingo.c
