@@ -302,7 +302,7 @@ static void SWrite(char *buffer, int size, int id)
 }
 
 //ADDED BY IAN BEATTY
-//hehe SEx..... im 12
+
 static void SExit(int status){
 	//we will need a way to identify threads
 	//if SExit can only be called if the status is 0 this check is redundant
@@ -326,6 +326,12 @@ static void SYield(){
 	printf("%s is after the Yield\n", currentThread->getName());
 }
 
+/*
+	SExec will return the number of the thread id. If the process failed to allocate memory prorperly
+	or if the file does not exst, return a value of -1 signalling that this process cannot run.
+	Handle disposing of process in syscall handling.
+*/
+
 static SpaceId SExec(char* name){
 	
 	char* filename = name;
@@ -342,7 +348,7 @@ static SpaceId SExec(char* name){
 	return -1;
     }
     space = new AddrSpace(executable);    
-    if(space == NULL){
+    if(machine->ReadRegister(2) == -1){
     	printf("Not enough Space\n");
     	delete executable;
     	return -1;

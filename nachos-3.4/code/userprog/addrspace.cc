@@ -24,6 +24,9 @@
 #include <strings.h>
 #endif
 
+
+//Initialize and Declare the bitmap object. This stores a map of the amount of available pages and will control what program is allowed to run.
+// >>Check bitmap.cc for further understanding
 BitMap *map = new BitMap(NumPhysPages);
 //----------------------------------------------------------------------
 // SwapHeader
@@ -49,7 +52,7 @@ SwapHeader(NoffHeader *noffH)
 
 //----------------------------------------------------------------------
 // AddrSpace::AddrSpace
-// 	Create an address space to run a user program.
+// 	Create an adress space to run a user program.
 //	Load the program from a file "executable", and set everything
 //	up so that we can start executing user instructions.
 //
@@ -95,19 +98,26 @@ AddrSpace::AddrSpace(OpenFile *executable)
 	printf("Initializing address space, num pages %d, size %d, Physical Pages Available %d\n",
 		numPages, size, map->NumClear()); 
 	// first, set up the translation
+	
+	
+	//Check if the number of pages this program takes is bigger than the amount of physical pages Available.
 	if(numPages > map->NumClear())
 	{
 		printf("Sorry bud, not enough memory. Nothing Personal.\n");
-	return;
+		//Write -1 into the second register for confirmation and return to caller.
+		machine->WriteRegister(2, -1);
+		return;
 	}
 
-	
+	//print out the status of the current map. Prints out the pages that are "marked" in the bitmap
+	//Marked pages are those that have taken up space for user programs.
 	map->Print();
 	
+	//>>Previously written code
 	pageTable = new TranslationEntry[numPages];
 	for (i = 0; i < numPages; i++) {
 		pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
-		pageTable[i].physicalPage = map->Find();
+		pageTable[i].physicalPage = map->Find(); //Finds the first available page and marks it for a reference in the page table
 		pageTable[i].valid = TRUE;
 		pageTable[i].use = FALSE;
 		pageTable[i].dirty = FALSE;
@@ -117,7 +127,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
 		bzero(&machine->mainMemory[pageTable[i].physicalPage * PageSize], PageSize);
 	}
-	map->Print();
+	map->Print();//Print out marked pages after process has allocated
 	
 
 	// zero out the entire address space, to zero the unitialized data segment 
@@ -143,7 +153,9 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
 //----------------------------------------------------------------------
 // AddrSpace::~AddrSpace
-// 	Dealloate an address space.  Nothing for now!
+// 	Dealloate an address space.  Unmarks all the pages that this page
+//	table takes up in the bitmap. delete the page table afterwards.
+// 	Function afterwards deletes the thread that was running this process
 //----------------------------------------------------------------------
 
 AddrSpace::~AddrSpace()
@@ -229,6 +241,7 @@ void AddrSpace::RestoreState()
 //Changes Virtual Address into Physical Address
 int AddrSpace::ChangeMe(int vaddr)
 {
+	//Algorithm to translate virtual page into a physical page.
 	int physaddr = pageTable[vaddr / PageSize].physicalPage * PageSize + (vaddr % PageSize);
 	return physaddr;
 
