@@ -78,7 +78,7 @@ void Thread::setParent(int id){
 }
 
 Thread*
-Thread::getThreadbyID(int id){
+getThreadbyID(int id){
 	for(int i = 0; i <10000; i++){
 		if(threadArray[i]->getID() == id){
 			return threadArray[i];

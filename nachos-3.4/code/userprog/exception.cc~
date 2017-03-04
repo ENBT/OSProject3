@@ -146,9 +146,10 @@ ExceptionHandler(ExceptionType which)
 			
 			Thread * newproc = getThreadbyID(machine->ReadRegister(2));
 			printf("The id for this Thread is %d\n", newproc->getID());
-			newproc->parent = getThreadbyID(currentThread->getID();
+			newproc->parent = getThreadbyID(currentThread->getID());
+			printf("The id for the parent of new proc is %d\n", newproc->parent->getID());
 			interrupt->SetLevel(IntOff);
-			newproc->parent->setStatus(BLOCKED);
+			newproc->parent->Sleep();
 			interrupt->SetLevel(IntOn);
 			
 		}	
@@ -298,22 +299,30 @@ static void SWrite(char *buffer, int size, int id)
 static void SExit(int status){
 	//we will need a way to identify threads
 	//if SExit can only be called if the status is 0 this check is redundant
+	
+	if (status == 0){
+	printf("%s is calling SExit, status = %d\n\n", currentThread->getName(), status);
 	if(currentThread->parent != NULL){
 		printf("Thread's Parent is: %d\n", currentThread->parent->getID());
 		currentThread->parent->setStatus(READY);
-	if (status == 0){
-	printf("%s is calling SExit, status = %d\n\n", currentThread->getName(), status);
+		scheduler->ReadToRun(currentThread->parent);
+		}
 	currentThread->space->~AddrSpace();
 	currentThread->Finish(); //should clean up everything nicely
 	}
 	else{
 		printf("User Program: %s did not exit normally\n", currentThread->getName());
+		if(currentThread->parent != NULL){
+			printf("Thread's Parent is: %d\n", currentThread->parent->getID());
+			currentThread->parent->setStatus(READY);
+			scheduler->ReadToRun(currentThread->parent);
+		}
 		currentThread->space->~AddrSpace();
 		
 		currentThread->Finish();
 	}
 	
-	}
+	
 }
 
 //ADDED BY IAN BEATTY
