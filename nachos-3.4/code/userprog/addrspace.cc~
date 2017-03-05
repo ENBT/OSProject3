@@ -24,6 +24,7 @@
 #include <strings.h>
 #endif
 
+extern int fitChoice; //Added for project 3
 
 //Initialize and Declare the bitmap object. This stores a map of the amount of available pages and will control what program is allowed to run.
 // >>Check bitmap.cc for further understanding
@@ -65,12 +66,65 @@ SwapHeader(NoffHeader *noffH)
 //	"executable" is the file containing the object code to load into memory
 //----------------------------------------------------------------------
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+/////////////////////////////PROJECT 3 START//////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////// 
+int
+project3task4(int minHoleSize){
+	int faveHole = 0;
+	int faveHoleSize = 0;
+	if(fitChoice == 1)
+		faveHoleSize = NumPhysPages + 1;
+	for(int i = 0; i < NumPhysPages; i++){
+		if((i == 0 && !map->Test(i))||(i > 0 && !map->Test(i) && map->Test(i-1))){
+			
+			int thisHoleSize = 0;
+			for(int j = i; j < NumPhysPages; j++){
+				printf("this is j %d\n", j);
+				if(!map->Test(j))
+					thisHoleSize++;
+				else
+					break;
+			}
+			if(thisHoleSize >= minHoleSize){
+				switch(fitChoice){
+					case 1: //best fit
+						if(thisHoleSize < faveHoleSize){
+							faveHole = i;
+							faveHoleSize = thisHoleSize;
+						}
+						break;
+							 
+					
+					case 2: //worst fit
+						if(thisHoleSize > faveHoleSize){
+							faveHole = i;
+							faveHoleSize = thisHoleSize;
+						}
+						break;
+						 
+					
+					case 3: //first fit
+						return i;  
+				}
+			}
+		}
+	}
+	return faveHole;
+}
 
-
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+/////////////////////////////PROJECT 3 END////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////// 
 AddrSpace::AddrSpace(OpenFile *executable)
 {
 	NoffHeader noffH;
 	unsigned int i, size;
+	int startPoint;
 	
 
 	executable->ReadAt((char *)&noffH, sizeof(noffH), 0);
@@ -113,22 +167,43 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
 	//print out the status of the current map. Prints out the pages that are "marked" in the bitmap
 	//Marked pages are those that have taken up space for user programs.
+	
 	map->Print();
 	
 	//>>Previously written code
 	pageTable = new TranslationEntry[numPages];
-	for (i = 0; i < numPages; i++) {
-		pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
-		pageTable[i].physicalPage = map->Find(); //Finds the first available page and marks it for a reference in the page table
-		pageTable[i].valid = TRUE;
-		pageTable[i].use = FALSE;
-		pageTable[i].dirty = FALSE;
-		pageTable[i].readOnly = FALSE;  // if the code segment was entirely on 
+	if(fitChoice == 1 || fitChoice == 2 || fitChoice == 3){ //bestfit
+		startPoint = project3task4(numPages);
+		printf("The starting point is %d\n", startPoint);
+		for (i = 0; i < numPages; i++) {
+			pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
+			pageTable[i].physicalPage = i + startPoint;//Finds the first available page and marks it for a reference in the page table
+			map->Mark(i + startPoint);
+			pageTable[i].valid = TRUE;
+			pageTable[i].use = FALSE;
+			pageTable[i].dirty = FALSE;
+			pageTable[i].readOnly = FALSE;  // if the code segment was entirely on 
 										// a separate page, we could set its 
 										// pages to be read-only
 
-		bzero(&machine->mainMemory[pageTable[i].physicalPage * PageSize], PageSize);
+			bzero(&machine->mainMemory[pageTable[i].physicalPage * PageSize], PageSize);
+		}
+	} else{
+		for (i = 0; i < numPages; i++) {
+			pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
+			pageTable[i].physicalPage = map->Find(); //Finds the first available page and marks it for a reference in the page table
+			pageTable[i].valid = TRUE;
+			pageTable[i].use = FALSE;
+			pageTable[i].dirty = FALSE;
+			pageTable[i].readOnly = FALSE;  // if the code segment was entirely on 
+										// a separate page, we could set its 
+										// pages to be read-only
+
+			bzero(&machine->mainMemory[pageTable[i].physicalPage * PageSize], PageSize);
+	    }
 	}
+	
+	
 	map->Print();//Print out marked pages after process has allocated
 	
 
@@ -168,6 +243,7 @@ AddrSpace::~AddrSpace()
 	
 	for(int i =0; i < numPages; i++){
 		map->Clear(pageTable[i].physicalPage);
+		printf("Deleting Page: %d\n", pageTable[i].physicalPage);
 	}
 	/*
 	z = 0;

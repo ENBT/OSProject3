@@ -22,6 +22,7 @@ extern void Initialize(int argc, char **argv); 	// Initialization,
 extern void Cleanup();				// Cleanup, called when
 						// Nachos is done.
 extern int whichOne; ///////////ADDED BY STEVEN BABINEAUX//////////////////////////////
+extern int fitChoice; //Added for project 3
 
 extern Thread *currentThread;			// the thread holding the CPU
 extern Thread *threadToBeDestroyed;  		// the thread that just finished

@@ -23,7 +23,7 @@ int * threadCount;
 
 
 int whichOne; ////////////////////////ADDED BY STEVEN BABINEAUX////////////////////////
-
+int fitChoice; //Added for project 3
 
 #ifdef FILESYS_NEEDED
 FileSystem  *fileSystem;
@@ -113,7 +113,38 @@ Initialize(int argc, char **argv)
 						// number generator
 	    randomYield = TRUE;
 	    argCount = 2;
+	} 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+/////////////////////////////PROJECT 3 START//////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////// 
+	else if(!strcmp(*argv, "-M")) {
+	    if(argc <= 1){
+	        printf("Not a valid input. Input 1, 2, or 3 next time. Running default fit.\n");
+	    }
+	    else if (!strcmp(*(argv + 1),"1")) {
+	    	printf("You chose best fit\n");
+			fitChoice = 1;
+	    }
+	    else if (!strcmp(*(argv + 1),"2")) {
+			fitChoice = 2;
+	    	printf("You chose worst fit\n");
+	    }
+	    else if (!strcmp(*(argv + 1),"3")) {
+			fitChoice = 3;
+			printf("You chose first fit\n");
+	    }
+	    else{
+            printf("Not a valid input.Input 1, 2, or 3 next time. Running default fit.\n"); 
+        }
 	}
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+/////////////////////////////PROJECT 3 END////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////// 
+
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 ////////////CODE STARTED BY STEVEN BABINEAUX//////////////////////////////
@@ -121,29 +152,29 @@ Initialize(int argc, char **argv)
 ////////////////////////////////////////////////////////////////////////// 
 	else if (!strcmp(*argv, "-A")) {
 	    if(argc <= 1){
-	        printf("Not a valid input. Input 1 or 2.\n");
+	        printf("Not a valid input. Input 1 or 2 or 3 or 4 or 5 or 6.\n");
 	    }
 	    else if (!strcmp(*(argv + 1),"1")) {
-		whichOne = 1;
+			whichOne = 1;
 	    }
 	    else if (!strcmp(*(argv + 1), "2")){
-		whichOne = 2;
-            }
-            else if (!strcmp(*(argv + 1), "3")){ 
-		whichOne = 3;
-            }
-            else if (!strcmp(*(argv + 1), "4")){ 
-		whichOne = 4;
-            }
-            else if (!strcmp(*(argv + 1), "5")){ 
-		whichOne = 5;
-            }
-            else if (!strcmp(*(argv + 1), "6")){ 
-		whichOne = 6;
-            }
-            else{
-                printf("Not a valid input. Input 1 or 2 or 3 or 4 or 5 or 6.\n"); 
-            }
+			whichOne = 2;
+        }
+        else if (!strcmp(*(argv + 1), "3")){ 
+			whichOne = 3;
+        }
+        else if (!strcmp(*(argv + 1), "4")){ 
+			whichOne = 4;
+        }
+        else if (!strcmp(*(argv + 1), "5")){ 
+			whichOne = 5;
+        }
+        else if (!strcmp(*(argv + 1), "6")){ 
+			whichOne = 6;
+        }
+        else{
+            printf("Not a valid input. Input 1 or 2 or 3 or 4 or 5 or 6.\n"); 
+        }
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 ////////////CODE ENDED BY STEVEN BABINEAUX////////////////////////////////
