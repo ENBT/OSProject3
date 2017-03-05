@@ -78,6 +78,7 @@ project3task4(int minHoleSize){
 	if(fitChoice == 1)
 		faveHoleSize = NumPhysPages + 1;
 	for(int i = 0; i < NumPhysPages; i++){
+		
 		if((i == 0 && !map->Test(i))||(i > 0 && !map->Test(i) && map->Test(i-1))){
 			
 			int thisHoleSize = 0;
@@ -89,6 +90,7 @@ project3task4(int minHoleSize){
 					break;
 			}
 			if(thisHoleSize >= minHoleSize){
+				printf("the hole size is %d\n", thisHoleSize);
 				switch(fitChoice){
 					case 1: //best fit
 						if(thisHoleSize < faveHoleSize){
@@ -112,6 +114,10 @@ project3task4(int minHoleSize){
 			}
 		}
 	}
+	printf("Favorable Hole Size = %d\n", faveHoleSize);
+	if(faveHoleSize > NumPhysPages || faveHoleSize == 0)
+		return -1;
+	
 	return faveHole;
 }
 
@@ -175,6 +181,14 @@ AddrSpace::AddrSpace(OpenFile *executable)
 	if(fitChoice == 1 || fitChoice == 2 || fitChoice == 3){ //bestfit
 		startPoint = project3task4(numPages);
 		printf("The starting point is %d\n", startPoint);
+		if(startPoint == -1){
+			printf("Sorry bud, not enough memory. Nothing Personal.\n");
+			//Write -1 into the second register for confirmation and return to caller.
+			machine->WriteRegister(2, -1);
+			return;
+		}
+		
+		
 		for (i = 0; i < numPages; i++) {
 			pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
 			pageTable[i].physicalPage = i + startPoint;//Finds the first available page and marks it for a reference in the page table
@@ -188,7 +202,16 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
 			bzero(&machine->mainMemory[pageTable[i].physicalPage * PageSize], PageSize);
 		}
+		
 	} else{
+		fitChoice = 3;
+		startPoint = project3task4(numPages);
+		if(startPoint == -1){
+			printf("Sorry bud, not enough memory. Nothing Personal.\n");
+			//Write -1 into the second register for confirmation and return to caller.
+			machine->WriteRegister(2, -1);
+			return;
+		}
 		for (i = 0; i < numPages; i++) {
 			pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
 			pageTable[i].physicalPage = map->Find(); //Finds the first available page and marks it for a reference in the page table

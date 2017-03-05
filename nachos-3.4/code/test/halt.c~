@@ -15,7 +15,7 @@
 int
 main()
 {
-
+	Write("\n Halt is Calling\n", 100, 1);
     Halt();
     /* not reached */
 }

@@ -204,25 +204,26 @@ ExceptionHandler(ExceptionType which)
 		puts ("ReadOnlyException");
 		if (currentThread->getName() == "main")
 		ASSERT(FALSE);  //Not the way of handling an exception.
-		//SExit(1);
+		SExit(1);
 		break;
 	case BusErrorException :
 		puts ("BusErrorException");
 		if (currentThread->getName() == "main")
 		ASSERT(FALSE);  //Not the way of handling an exception.
-		//SExit(1);
+		SExit(1);
 		break;
 	case AddressErrorException :
 		puts ("AddressErrorException");
+		SExit(1);
 		if (currentThread->getName() == "main")
 		ASSERT(FALSE);  //Not the way of handling an exception.
-		//SExit(1);
+		SExit(1);
 		break;
 	case OverflowException :
 		puts ("OverflowException");
 		if (currentThread->getName() == "main")
 		ASSERT(FALSE);  //Not the way of handling an exception.
-		//SExit(1);
+		SExit(1);
 		break;
 	case IllegalInstrException :
 		puts ("IllegalInstrException");
@@ -234,7 +235,7 @@ ExceptionHandler(ExceptionType which)
 		puts ("NumExceptionTypes");
 		if (currentThread->getName() == "main")
 		ASSERT(FALSE);  //Not the way of handling an exception.
-		//SExit(1);
+		SExit(1);
 		break;
 
 		default :
