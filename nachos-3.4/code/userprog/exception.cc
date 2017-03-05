@@ -141,6 +141,10 @@ ExceptionHandler(ExceptionType which)
 		
 		case SC_Join:
 		{
+			if(arg1 == -1){
+				printf("This process could not be joined because it failed to execute properly.\n");
+				break;
+			}
 			printf("Thread: %d is calling to join a process thread: %d\n", currentThread->getID(),
 			 arg1);
 			
