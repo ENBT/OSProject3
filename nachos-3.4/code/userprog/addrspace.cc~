@@ -86,6 +86,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 	numPages = divRoundUp(size, PageSize);
 	
 	size = numPages * PageSize;
+	
 	//Check if the number of pages this program takes is bigger than the amount of physical pages Available.
 	if(numPages > map->NumClear())
 	{
@@ -161,8 +162,16 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
 AddrSpace::~AddrSpace()
 {
-	unsigned int z, pnum;
+	unsigned int curr, pnum, last;
+	curr = 0;
+
+	
+	for(int i =0; i < numPages; i++){
+		map->Clear(pageTable[i].physicalPage);
+	}
+	/*
 	z = 0;
+	
 	pnum = numPages;
 	
 	if(pageTable[0].physicalPage > z)
@@ -179,7 +188,7 @@ AddrSpace::~AddrSpace()
 		printf("Deleting Page: %d\n",z);
 		}
 			
-	
+	*/
 	delete pageTable;
 }
 

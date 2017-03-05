@@ -162,8 +162,17 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
 AddrSpace::~AddrSpace()
 {
-	unsigned int z, pnum;
+	unsigned int curr, pnum, last;
+	curr = 0;
+
+	
+	for(int i =0; i < numPages; i++){
+		map->Clear(pageTable[i].physicalPage);
+		printf("Deleting Page: %d\n", pageTable[i].physicalPage);
+	}
+	/*
 	z = 0;
+	
 	pnum = numPages;
 	
 	if(pageTable[0].physicalPage > z)
@@ -180,7 +189,7 @@ AddrSpace::~AddrSpace()
 		printf("Deleting Page: %d\n",z);
 		}
 			
-	
+	*/
 	delete pageTable;
 }
 
