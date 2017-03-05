@@ -38,6 +38,7 @@ Thread* threadArray[10000]; 	//big array of threads
 Thread::Thread(char* threadName)
 {
 	parent = NULL;
+	numChildren = 0;
 	*threadCount += 1;
 	id = *threadCount;
     name = threadName;
@@ -259,7 +260,7 @@ Thread::Sleep ()
 {
     Thread *nextThread;
     
-    //ASSERT(this == currentThread);
+    ASSERT(this == currentThread);
     ASSERT(interrupt->getLevel() == IntOff);
     
     DEBUG('t', "Sleeping thread \"%s\"\n", getName());

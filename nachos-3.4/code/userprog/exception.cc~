@@ -142,15 +142,21 @@ ExceptionHandler(ExceptionType which)
 		case SC_Join:
 		{
 			printf("Thread: %d is calling to join a process thread: %d\n", currentThread->getID(),
-			 machine->ReadRegister(2));
+			 arg1);
 			
-			Thread * newproc = getThreadbyID(machine->ReadRegister(2));
+			Thread * newproc = getThreadbyID(arg1);
 			printf("The id for this Thread is %d\n", newproc->getID());
 			newproc->parent = getThreadbyID(currentThread->getID());
 			printf("The id for the parent of new proc is %d\n", newproc->parent->getID());
+			currentThread->numChildren++;
+
+			
 			interrupt->SetLevel(IntOff);
-			newproc->parent->Sleep();
+			currentThread->Sleep();
 			interrupt->SetLevel(IntOn);
+	
+			
+			
 			
 		}	
 			break;
@@ -297,6 +303,7 @@ static void SWrite(char *buffer, int size, int id)
 //ADDED BY IAN BEATTY
 
 static void SExit(int status){
+	Thread* parentToRun = NULL;
 	//we will need a way to identify threads
 	//if SExit can only be called if the status is 0 this check is redundant
 	
@@ -304,8 +311,9 @@ static void SExit(int status){
 	printf("%s is calling SExit, status = %d\n\n", currentThread->getName(), status);
 	if(currentThread->parent != NULL){
 		printf("Thread's Parent is: %d\n", currentThread->parent->getID());
-		currentThread->parent->setStatus(READY);
-		scheduler->ReadToRun(currentThread->parent);
+		parentToRun = currentThread->parent;
+		
+		scheduler->ReadyToRun(parentToRun);
 		}
 	currentThread->space->~AddrSpace();
 	currentThread->Finish(); //should clean up everything nicely
@@ -314,8 +322,10 @@ static void SExit(int status){
 		printf("User Program: %s did not exit normally\n", currentThread->getName());
 		if(currentThread->parent != NULL){
 			printf("Thread's Parent is: %d\n", currentThread->parent->getID());
-			currentThread->parent->setStatus(READY);
-			scheduler->ReadToRun(currentThread->parent);
+			parentToRun = currentThread->parent;
+			parentToRun->numChildren--;
+			
+			scheduler->ReadyToRun(parentToRun);
 		}
 		currentThread->space->~AddrSpace();
 		

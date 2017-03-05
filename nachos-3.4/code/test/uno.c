@@ -11,15 +11,21 @@
  */
 
 #include "syscall.h"
+int id, ip, ig;
 
 int
 main()
 {
-	int id;
-	Exec("../test/matmult");
-	id = Exec("../test/boi");
+	/*id = Exec("../test/sizeTest5"); //size 6
 	Join(id);
-	Write(" El bano es muy bonita\n", 100, 1);
+	ip = Exec("../test/sizeTest4"); //size 9
+	ig = Exec("../test/sizeTest3"); //size 14
 	
-    /* not reached */
+	Exec("../test/sizeTest2"); //size 22*/
+	
+	Exec("../test/sizeTest5");
+	
+	Exec("../test/sizeTest4");
+	Yield();
+	Exec("../test/sizeTest3");
 }

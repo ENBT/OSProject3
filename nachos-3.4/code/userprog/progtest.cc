@@ -36,7 +36,13 @@ ASSERT(FALSE);
 void
 StartProcess(char *filename)
 {
-    OpenFile *executable = fileSystem->Open(filename);
+   
+	
+	
+	
+	//StartProcess((char *) arg);
+	
+	OpenFile *executable = fileSystem->Open(filename);
     AddrSpace *space;
 
     if (executable == NULL) {
@@ -44,12 +50,19 @@ StartProcess(char *filename)
 	return;
     }
     space = new AddrSpace(executable);    
+    if(machine->ReadRegister(2) == -1){
+    	printf("Not enough Space\n");
+    	delete executable;
+    	return;
+    }
     //currentThread->space = space;
     Thread *t = new Thread(filename);
     t->space = space;
     t->Fork(CreateProcess, 0);
+    int id = t->getID();
+    printf("The id for file, %s is: %d\n", filename, id);
 
-    delete executable;			// close file
+    delete executable;		// close file
 
     
 }

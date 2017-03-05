@@ -106,6 +106,7 @@ class Thread {
     int GetFirstEmptyIndex(); //ADDED FOR PROJECT 3
     void FillThreadArray(Thread* t);
     void setParent(int id);
+    int numChildren;
    // Thread* getThreadbyID(int id);
     Thread * parent;
     

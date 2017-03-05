@@ -86,6 +86,15 @@ AddrSpace::AddrSpace(OpenFile *executable)
 	numPages = divRoundUp(size, PageSize);
 	
 	size = numPages * PageSize;
+	
+	//Check if the number of pages this program takes is bigger than the amount of physical pages Available.
+	if(numPages > map->NumClear())
+	{
+		printf("Sorry bud, not enough memory. Nothing Personal.\n");
+		//Write -1 into the second register for confirmation and return to caller.
+		machine->WriteRegister(2, -1);
+		return;
+	}
 
 	ASSERT(numPages <= NumPhysPages);		// check we're not trying
 											// to run anything too big --
@@ -100,14 +109,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 	// first, set up the translation
 	
 	
-	//Check if the number of pages this program takes is bigger than the amount of physical pages Available.
-	if(numPages > map->NumClear())
-	{
-		printf("Sorry bud, not enough memory. Nothing Personal.\n");
-		//Write -1 into the second register for confirmation and return to caller.
-		machine->WriteRegister(2, -1);
-		return;
-	}
+	
 
 	//print out the status of the current map. Prints out the pages that are "marked" in the bitmap
 	//Marked pages are those that have taken up space for user programs.

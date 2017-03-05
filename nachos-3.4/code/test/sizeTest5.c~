@@ -1,4 +1,4 @@
-/* halt.c
+/* sizeTest.c
  *	Simple program to test whether running a user program works.
  *	
  *	Just do a "syscall" that shuts down the OS.
@@ -11,20 +11,19 @@
  */
 
 #include "syscall.h"
-int id, ip, ig;
+
+int i;
+int a = 2;
+int arr[10];
 
 int
 main()
 {
-	/*id = Exec("../test/sizeTest5"); //size 6
-	Join(id);
-	ip = Exec("../test/sizeTest4"); //size 9
-	ig = Exec("../test/sizeTest3"); //size 14
 	
-	Exec("../test/sizeTest2"); //size 22*/
+	for(i = 0; i < 2500; i++){
+		//a *= a;
+		arr[i] = a;
+	}
 	
-	Exec("../test/sizeTest5");
 	
-	Exec("../test/sizeTest4");
-	Yield();
 }
