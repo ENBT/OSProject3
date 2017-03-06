@@ -190,8 +190,17 @@ Thread::CheckOverflow()
 void
 Thread::Finish ()
 {
+	Thread* parentToRun = NULL;
     (void) interrupt->SetLevel(IntOff);		
     ASSERT(this == currentThread);
+    if(currentThread->parent != NULL){
+			printf("Thread's Parent is: %d\n", currentThread->parent->getID());
+			parentToRun = currentThread->parent;
+			parentToRun->numChildren--;
+			if(parentToRun->numChildren == 0)
+			
+				scheduler->ReadyToRun(parentToRun);
+		}
     
     DEBUG('t', "Finishing thread \"%s\"\n", getName());
     

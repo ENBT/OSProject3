@@ -314,27 +314,13 @@ static void SExit(int status){
 	
 	if (status == 0){
 	printf("%s is calling SExit, status = %d\n\n", currentThread->getName(), status);
-	if(currentThread->parent != NULL){
-			printf("Thread's Parent is: %d\n", currentThread->parent->getID());
-			parentToRun = currentThread->parent;
-			parentToRun->numChildren--;
-			if(parentToRun->numChildren == 0)
-			
-				scheduler->ReadyToRun(parentToRun);
-		}
+	
 	currentThread->space->~AddrSpace();
 	currentThread->Finish(); //should clean up everything nicely
 	}
 	else{
 		printf("User Program: %s did not exit normally\n", currentThread->getName());
-		if(currentThread->parent != NULL){
-			printf("Thread's Parent is: %d\n", currentThread->parent->getID());
-			parentToRun = currentThread->parent;
-			parentToRun->numChildren--;
-			if(parentToRun->numChildren == 0)
-			
-				scheduler->ReadyToRun(parentToRun);
-		}
+		
 		currentThread->space->~AddrSpace();
 		
 		currentThread->Finish();

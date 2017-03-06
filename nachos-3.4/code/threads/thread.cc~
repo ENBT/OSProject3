@@ -38,6 +38,7 @@ Thread* threadArray[10000]; 	//big array of threads
 Thread::Thread(char* threadName)
 {
 	parent = NULL;
+	numChildren = 0;
 	*threadCount += 1;
 	id = *threadCount;
     name = threadName;
@@ -191,6 +192,14 @@ Thread::Finish ()
 {
     (void) interrupt->SetLevel(IntOff);		
     ASSERT(this == currentThread);
+    if(currentThread->parent != NULL){
+			printf("Thread's Parent is: %d\n", currentThread->parent->getID());
+			parentToRun = currentThread->parent;
+			parentToRun->numChildren--;
+			if(parentToRun->numChildren == 0)
+			
+				scheduler->ReadyToRun(parentToRun);
+		}
     
     DEBUG('t', "Finishing thread \"%s\"\n", getName());
     

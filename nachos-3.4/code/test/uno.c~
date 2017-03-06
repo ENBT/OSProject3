@@ -16,16 +16,12 @@ int id, ip, ig;
 int
 main()
 {
-	/*id = Exec("../test/sizeTest5"); //size 6
+	id = Exec("../test/sizeTest5"); //size 6
 	Join(id);
 	ip = Exec("../test/sizeTest4"); //size 9
 	ig = Exec("../test/sizeTest3"); //size 14
 	
-	Exec("../test/sizeTest2"); //size 22*/
+	Exec("../test/sizeTest2"); //size 22
 	
-	Exec("../test/sizeTest5");
 	
-	Exec("../test/sizeTest4");
-	Yield();
-	Exec("../test/sizeTest3");
 }

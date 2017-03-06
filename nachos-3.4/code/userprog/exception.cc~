@@ -141,6 +141,10 @@ ExceptionHandler(ExceptionType which)
 		
 		case SC_Join:
 		{
+			if(arg1 == -1){
+				printf("This process could not be joined because it failed to execute properly.\n");
+				break;
+			}
 			printf("Thread: %d is calling to join a process thread: %d\n", currentThread->getID(),
 			 arg1);
 			
@@ -323,14 +327,7 @@ static void SExit(int status){
 	}
 	else{
 		printf("User Program: %s did not exit normally\n", currentThread->getName());
-		if(currentThread->parent != NULL){
-			printf("Thread's Parent is: %d\n", currentThread->parent->getID());
-			parentToRun = currentThread->parent;
-			parentToRun->numChildren--;
-			if(parentToRun->numChildren == 0)
-			
-				scheduler->ReadyToRun(parentToRun);
-		}
+		
 		currentThread->space->~AddrSpace();
 		
 		currentThread->Finish();

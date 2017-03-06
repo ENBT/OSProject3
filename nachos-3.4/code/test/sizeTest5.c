@@ -12,6 +12,7 @@
 
 #include "syscall.h"
 
+
 int i;
 int a = 2;
 int arr[10];
@@ -19,6 +20,7 @@ int arr[10];
 int
 main()
 {
+	
 	
 	for(i = 0; i < 10; i++){
 		//a *= a;
