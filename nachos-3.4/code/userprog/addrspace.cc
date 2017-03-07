@@ -150,7 +150,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 	//Check if the number of pages this program takes is bigger than the amount of physical pages Available.
 	if(numPages > map->NumClear())
 	{
-		printf("Sorry bud, not enough memory. Nothing Personal.\n");
+		printf("Sorry bud, not enough memory. Nothing Personal.\n\n");
 		//Write -1 into the second register for confirmation and return to caller.
 		machine->WriteRegister(2, -1);
 		return;
@@ -164,7 +164,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
 	DEBUG('a', "Initializing address space, num pages %d, size %d\n",
 		numPages, size);
-	printf("Initializing address space, num pages %d, size %d, Physical Pages Available %d\n",
+	printf("Initializing address space, num pages %d, size %d, Physical Pages Available %d\n\n",
 		numPages, size, map->NumClear()); 
 	// first, set up the translation
 	
@@ -175,6 +175,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 	//Marked pages are those that have taken up space for user programs.
 	
 	map->Print();
+	printf("\n");
 	
 	//>>Previously written code
 	pageTable = new TranslationEntry[numPages];
@@ -182,7 +183,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 		startPoint = project3task4(numPages);
 		printf("The starting point is %d\n", startPoint);
 		if(startPoint == -1){
-			printf("Sorry bud, not enough memory. Nothing Personal.\n");
+			printf("Sorry bud, not enough memory. Nothing Personal.\n\n");
 			//Write -1 into the second register for confirmation and return to caller.
 			machine->WriteRegister(2, -1);
 			return;
@@ -207,7 +208,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 		fitChoice = 3;
 		startPoint = project3task4(numPages);
 		if(startPoint == -1){
-			printf("Sorry bud, not enough memory. Nothing Personal.\n");
+			printf("Sorry bud, not enough memory. Nothing Personal.\n\n");
 			//Write -1 into the second register for confirmation and return to caller.
 			machine->WriteRegister(2, -1);
 			return;
@@ -228,6 +229,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 	
 	
 	map->Print();//Print out marked pages after process has allocated
+	printf("\n");
 	
 
 	// zero out the entire address space, to zero the unitialized data segment 

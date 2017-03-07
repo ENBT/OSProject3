@@ -114,11 +114,11 @@ ExceptionHandler(ExceptionType which)
         	programName[i] = '\0';
         	int result = SExec(programName);
         	if(result == -1){
-        		printf("error with execution\n");
+        		printf("error with execution\n\n");
         		break;
         	}
         	machine->WriteRegister(2, result);
-        	printf("The thing inside of Register 2 is: %d\n", machine->ReadRegister(2));
+        	
 
 			break;
 			
@@ -145,13 +145,12 @@ ExceptionHandler(ExceptionType which)
 				printf("This process could not be joined because it failed to execute properly.\n");
 				break;
 			}
-			printf("Thread: %d is calling to join a process thread: %d\n", currentThread->getID(),
+			printf("Thread: %d is calling to join a process thread: %d\n\n", currentThread->getID(),
 			 arg1);
 			
 			Thread * newproc = getThreadbyID(arg1);
-			printf("The id for this Thread is %d\n", newproc->getID());
 			newproc->parent = getThreadbyID(currentThread->getID());
-			printf("The id for the parent of new proc is %d\n", newproc->parent->getID());
+
 			currentThread->numChildren++;
 
 			
@@ -311,15 +310,15 @@ static void SExit(int status){
 	Thread* parentToRun = NULL;
 	//we will need a way to identify threads
 	//if SExit can only be called if the status is 0 this check is redundant
-	
+	machine->WriteRegister(2, status);
 	if (status == 0){
-	printf("%s is calling SExit, status = %d\n\n", currentThread->getName(), status);
+	printf("User Program: %s exited normally\n\n", currentThread->getName());
 	
 	currentThread->space->~AddrSpace();
 	currentThread->Finish(); //should clean up everything nicely
 	}
 	else{
-		printf("User Program: %s did not exit normally\n", currentThread->getName());
+		printf("User Program: %s did not exit normally\n\n", currentThread->getName());
 		
 		currentThread->space->~AddrSpace();
 		
@@ -332,9 +331,9 @@ static void SExit(int status){
 //ADDED BY IAN BEATTY
 static void SYield(){
 	//we will need a way to identify threads
-	printf("%s is calling SYield\n", currentThread->getName());
+	printf("%s is Yielding\n\n", currentThread->getName());
 	currentThread->Yield();
-	printf("%s is after the Yield\n", currentThread->getName());
+
 }
 
 /*
@@ -360,7 +359,7 @@ static SpaceId SExec(char* name){
     }
     space = new AddrSpace(executable);    
     if(machine->ReadRegister(2) == -1){
-    	printf("Not enough Space\n");
+    	printf("Not enough Space\n\n");
     	delete executable;
     	return -1;
     }
@@ -369,7 +368,7 @@ static SpaceId SExec(char* name){
     t->space = space;
     t->Fork(CreateProcess, 0);
     int id = t->getID();
-    printf("The id for file, %s is: %d\n", name, id);
+   
 
     delete executable;	
     

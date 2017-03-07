@@ -88,6 +88,16 @@ getThreadbyID(int id){
 	return NULL;
 }
 
+int
+	getArrayIndex(int id){
+		for(int i = 0; i < 10000; i++){
+			if(threadArray[i]->getID() == id){
+				return i;
+			}
+		}
+		return -1;
+	}
+
 
 
 //----------------------------------------------------------------------
@@ -104,6 +114,7 @@ getThreadbyID(int id){
 
 Thread::~Thread()
 {
+	
     DEBUG('t', "Deleting thread \"%s\"\n", name);
 	
     ASSERT(this != currentThread);
@@ -190,14 +201,18 @@ Thread::CheckOverflow()
 void
 Thread::Finish ()
 {
+	int index = getArrayIndex(this->getID());
 	Thread* parentToRun = NULL;
     (void) interrupt->SetLevel(IntOff);		
     ASSERT(this == currentThread);
     if(currentThread->parent != NULL){
-			printf("Thread's Parent is: %d\n", currentThread->parent->getID());
+			printf("Thread's Parent is: %d\n\n", currentThread->parent->getID());
 			parentToRun = currentThread->parent;
 			parentToRun->numChildren--;
 			if(parentToRun->numChildren == 0)
+			
+			if(index != -1)
+				threadArray[index] = NULL;
 			
 				scheduler->ReadyToRun(parentToRun);
 		}
