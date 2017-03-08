@@ -30,6 +30,7 @@
 
 // begin FA98
 
+
 static int SRead(int addr, int size, int id);
 static void SWrite(char *buffer, int size, int id);
 static void SExit(int status);

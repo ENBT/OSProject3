@@ -20,14 +20,17 @@
 #include "addrspace.h"
 #include "noff.h"
 #include "bitmap.h"
+#include "synch.h"
 #ifdef HOST_SPARC
 #include <strings.h>
 #endif
-
+//hi
+Semaphore * bitMapSem = new Semaphore("bitMapSem", 1);
 extern int fitChoice; //Added for project 3
 
 //Initialize and Declare the bitmap object. This stores a map of the amount of available pages and will control what program is allowed to run.
 // >>Check bitmap.cc for further understanding
+
 BitMap *map = new BitMap(NumPhysPages);
 //----------------------------------------------------------------------
 // SwapHeader
@@ -189,7 +192,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 			return;
 		}
 		
-		
+		bitMapSem->P();
 		for (i = 0; i < numPages; i++) {
 			pageTable[i].virtualPage = i;	// for now, virtual page # = phys page #
 			pageTable[i].physicalPage = i + startPoint;//Finds the first available page and marks it for a reference in the page table
@@ -203,6 +206,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
 			bzero(&machine->mainMemory[pageTable[i].physicalPage * PageSize], PageSize);
 		}
+		bitMapSem->V();
 		
 	} else{
 		fitChoice = 3;
@@ -265,11 +269,12 @@ AddrSpace::~AddrSpace()
 	unsigned int curr, pnum, last;
 	curr = 0;
 
-	
+	bitMapSem->P();
 	for(int i =0; i < numPages; i++){
 		map->Clear(pageTable[i].physicalPage);
 		printf("Deleting Page: %d\n", pageTable[i].physicalPage);
 	}
+	bitMapSem->V();
 	/*
 	z = 0;
 	

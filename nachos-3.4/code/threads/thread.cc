@@ -13,20 +13,21 @@
 // Copyright (c) 1992-1993 The Regents of the University of California.
 // All rights reserved.  See copyright.h for copyright notice and limitation 
 // of liability and disclaimer of warranty provisions.
-
+//hi
 #include "copyright.h"
 #include "thread.h"
 #include "switch.h"
 #include "synch.h"
 #include "system.h"
 
+Semaphore * threadsArraySem = new Semaphore("threadsArrauSem", 1);
 
 #define STACK_FENCEPOST 0xdeadbeef	// this is put at the top of the
 					// execution stack, for detecting 
 					// stack overflows
 					
 extern int  * threadCount;
-Thread* threadArray[10000]; 	//big array of threads
+Thread* threadArray[32]; 	//big array of threads
 //----------------------------------------------------------------------
 // Thread::Thread
 // 	Initialize a thread control block, so that we can then call
@@ -45,7 +46,9 @@ Thread::Thread(char* threadName)
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
+    threadsArraySem->P();
     FillThreadArray(this);
+    threadsArraySem->V();
 #ifdef USER_PROGRAM
     space = NULL;
 #endif
@@ -53,7 +56,7 @@ Thread::Thread(char* threadName)
 
 int
 Thread::GetFirstEmptyIndex(){
-	for(int i = 0; i < 10000; i++){
+	for(int i = 0; i < 32; i++){
 		if(threadArray[i] == NULL) return i;
 	}
 	return -1;
@@ -68,9 +71,9 @@ Thread::FillThreadArray(Thread* t){
 }
 
 void Thread::setParent(int id){
-	for(int i = 0; i < 10000; i++){
+	for(int i = 0; i < 32; i++){
 		if(threadArray[i]->getID() == id){
-			parent == threadArray[i];
+			parent = threadArray[i];
 			return;
 		}
 		printf("Couldnt Find that Parent\n");
@@ -80,7 +83,7 @@ void Thread::setParent(int id){
 
 Thread*
 getThreadbyID(int id){
-	for(int i = 0; i <10000; i++){
+	for(int i = 0; i <32; i++){
 		if(threadArray[i]->getID() == id){
 			return threadArray[i];
 		}
@@ -90,7 +93,7 @@ getThreadbyID(int id){
 
 int
 	getArrayIndex(int id){
-		for(int i = 0; i < 10000; i++){
+		for(int i = 0; i < 32; i++){
 			if(threadArray[i]->getID() == id){
 				return i;
 			}
@@ -212,8 +215,11 @@ Thread::Finish ()
 			if(parentToRun->numChildren == 0)
 			
 			if(index != -1)
+			{
+				threadsArraySem->P();
 				threadArray[index] = NULL;
-			
+				threadsArraySem->V();
+			}
 				scheduler->ReadyToRun(parentToRun);
 		}
     

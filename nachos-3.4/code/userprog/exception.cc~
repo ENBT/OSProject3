@@ -30,10 +30,12 @@
 
 // begin FA98
 
+Semaphore bitMapSem = new Semaphore("bitMapSem", 1);
+
 static int SRead(int addr, int size, int id);
 static void SWrite(char *buffer, int size, int id);
-static void SExit(int status); //ADDED BY IAN BEATTY
-static void SYield(); //ADDED BY IAN BEATTY
+static void SExit(int status);
+static void SYield();
 static SpaceId SExec(char* name);
 extern void StartProcess(char *file), ConsoleTest(char *in, char *out);
 extern void CreateProcess(int arg);
@@ -122,11 +124,9 @@ ExceptionHandler(ExceptionType which)
         		break;
         	}
         	machine->WriteRegister(2, result);
-        	
-
 			break;
-			
 			}
+			
 		case SC_Exit :
 			//printf("In switch case type number: %d\n", type);
 			//printf("arg1 = %d\n", arg1);
@@ -140,6 +140,7 @@ ExceptionHandler(ExceptionType which)
 			//printf("In switch case type number: %d\n", type);
 			SYield();
 			break;
+			
 		case SC_Join:
 		{
 			if(arg1 == -1){
