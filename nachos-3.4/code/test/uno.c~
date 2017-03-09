@@ -16,12 +16,11 @@ int id, ip, ig;
 int
 main()
 {
-	id = Exec("../test/sizeTest5"); //size 6
-	Join(id);
-	ip = Exec("../test/sizeTest4"); //size 9
-	ig = Exec("../test/sizeTest3"); //size 14
-	
-	Exec("../test/sizeTest2"); //size 22
+	//Join(Exec("../test/uno"));
+	//Exec("../test/uno");
+	for(ip = 0; ip < 10000; ip++){
+		Join(Exec("../test/sizeTest5"));
+	}
 	
 	
 }

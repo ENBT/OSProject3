@@ -150,13 +150,18 @@ ExceptionHandler(ExceptionType which)
 			 arg1);
 			
 			Thread * newproc = getThreadbyID(arg1);
-			newproc->parent = getThreadbyID(currentThread->getID());
+			if(newproc != NULL){
+				interrupt->SetLevel(IntOff);
+				newproc->parent = getThreadbyID(currentThread->getID());
+				currentThread->Sleep();
+				interrupt->SetLevel(IntOn);
+				currentThread->numChildren++;
+			}
+			
 
-			currentThread->numChildren++;
+			
 
-			interrupt->SetLevel(IntOff);
-			currentThread->Sleep();
-			interrupt->SetLevel(IntOn);
+			
 
 		}	
 			break;

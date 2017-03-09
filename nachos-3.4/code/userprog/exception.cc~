@@ -30,7 +30,6 @@
 
 // begin FA98
 
-Semaphore bitMapSem = new Semaphore("bitMapSem", 1);
 
 static int SRead(int addr, int size, int id);
 static void SWrite(char *buffer, int size, int id);
@@ -151,13 +150,17 @@ ExceptionHandler(ExceptionType which)
 			 arg1);
 			
 			Thread * newproc = getThreadbyID(arg1);
-			newproc->parent = getThreadbyID(currentThread->getID());
+			if(newproc != NULL){
+				interrupt->SetLevel(IntOff);
+				newproc->parent = getThreadbyID(currentThread->getID());
+				currentThread->Sleep();
+				interrupt->SetLevel(IntOn);
+			}
+			
 
 			currentThread->numChildren++;
 
-			interrupt->SetLevel(IntOff);
-			currentThread->Sleep();
-			interrupt->SetLevel(IntOn);
+			
 
 		}	
 			break;
