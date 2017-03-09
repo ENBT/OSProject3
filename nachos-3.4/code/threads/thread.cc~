@@ -13,7 +13,7 @@
 // Copyright (c) 1992-1993 The Regents of the University of California.
 // All rights reserved.  See copyright.h for copyright notice and limitation 
 // of liability and disclaimer of warranty provisions.
-
+//hi
 #include "copyright.h"
 #include "thread.h"
 #include "switch.h"
@@ -43,6 +43,7 @@ Thread::Thread(char* threadName)
 	*threadCount += 1;
 	id = *threadCount;
     name = threadName;
+    completed = false;
     stackTop = NULL;
     stack = NULL;
     status = JUST_CREATED;
@@ -204,24 +205,28 @@ Thread::CheckOverflow()
 void
 Thread::Finish ()
 {
-	int index = getArrayIndex(this->getID());
-	Thread* parentToRun = NULL;
+
+	
     (void) interrupt->SetLevel(IntOff);		
     ASSERT(this == currentThread);
+    int index = getArrayIndex(currentThread->getID());
+	Thread* parentToRun = NULL;
     if(currentThread->parent != NULL){
+    		completed = true;
 			printf("Thread's Parent is: %d\n\n", currentThread->parent->getID());
 			parentToRun = currentThread->parent;
 			parentToRun->numChildren--;
-			if(parentToRun->numChildren == 0)
-			
-			if(index != -1)
+			if(index != -1 && index < 32)
 			{
-				threadsArraySem->P();
+				interrupt->SetLevel(IntOff);
 				threadArray[index] = NULL;
-				threadsArraySem->V();
+				interrupt->SetLevel(IntOn);
+				
 			}
+			
 				scheduler->ReadyToRun(parentToRun);
 		}
+	
     
     DEBUG('t', "Finishing thread \"%s\"\n", getName());
     
@@ -289,17 +294,19 @@ void
 Thread::Sleep ()
 {
     Thread *nextThread;
-    
+    interrupt->SetLevel(IntOff);
     ASSERT(this == currentThread);
     ASSERT(interrupt->getLevel() == IntOff);
     
     DEBUG('t', "Sleeping thread \"%s\"\n", getName());
 
     status = BLOCKED;
+    
     while ((nextThread = scheduler->FindNextToRun()) == NULL)
-	interrupt->Idle();	// no one to run, wait for an interrupt
+    interrupt->Idle();	// no one to run, wait for an interrupt
         
     scheduler->Run(nextThread); // returns when we've been signalled
+    interrupt->SetLevel(IntOn);
 }
 
 //----------------------------------------------------------------------

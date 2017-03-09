@@ -39,8 +39,10 @@ static SpaceId SExec(char* name);
 extern void StartProcess(char *file), ConsoleTest(char *in, char *out);
 extern void CreateProcess(int arg);
 extern Thread* getThreadbyID(int id);
+static int SJoin(SpaceId parent);
+extern Thread* threadArray[];
 
-
+extern int getArrayIndex(int id);
 // end FA98
 
 //----------------------------------------------------------------------
@@ -109,19 +111,22 @@ ExceptionHandler(ExceptionType which)
 		case SC_Exec :
 			{
 			//printf("Inside of exec");
-        	char *programName = new char[100];
+        	char *programName = new char[1000];
         	int i = 0; 
         	int character = 1;
-        	while ((i < 98) && (character != 0)) {
+        	while ((i < 998) && (character != 0)) {
           		machine->ReadMem(arg1+i, 1, &character);
           		programName[i++] = (char) character;
         	}
         	programName[i] = '\0';
+        	
         	int result = SExec(programName);
         	if(result == -1){
         		printf("error with execution\n\n");
+        		machine->WriteRegister(2, result);
         		break;
         	}
+        	
         	machine->WriteRegister(2, result);
 			break;
 			}
@@ -131,7 +136,9 @@ ExceptionHandler(ExceptionType which)
 			//printf("arg1 = %d\n", arg1);
 			if(arg1 == 0){
 				//printf("in if statment arg1 = %d\n", arg1);
+				
 				SExit(arg1);
+				
 			}
 			break;
 			
@@ -142,27 +149,19 @@ ExceptionHandler(ExceptionType which)
 			
 		case SC_Join:
 		{
+			int result = 0;
 			if(arg1 == -1){
 				printf("This process could not be joined because it failed to execute properly.\n");
+				result = -1;
+				machine->WriteRegister(2, result);
 				break;
 			}
 			printf("Thread: %d is calling to join a process thread: %d\n\n", currentThread->getID(),
 			 arg1);
-			
-			Thread * newproc = getThreadbyID(arg1);
-			if(newproc != NULL){
-				interrupt->SetLevel(IntOff);
-				newproc->parent = getThreadbyID(currentThread->getID());
-				currentThread->Sleep();
-				interrupt->SetLevel(IntOn);
-				currentThread->numChildren++;
-			}
-			
-
-			
-
-			
-
+			 
+			result = SJoin(arg1);
+			machine->WriteRegister(2, result);
+			break;
 		}	
 			break;
 	
@@ -331,9 +330,19 @@ static void SWrite(char *buffer, int size, int id)
 ////////////////////////////////////////////////////////////////////////// 
 
 static void SExit(int status){
-	Thread* parentToRun = NULL;
+	
+	
 	//we will need a way to identify threads
 	//if SExit can only be called if the status is 0 this check is redundant
+	/*
+	if(index != -1 && index < 32)
+			{
+				interrupt->SetLevel(IntOff);
+				threadArray[index] = NULL;
+				interrupt->SetLevel(IntOn);
+				
+			}
+	*/
 	machine->WriteRegister(2, status);
 	if (status == 0){
 	printf("User Program: %s exited normally\n\n", currentThread->getName());
@@ -373,9 +382,10 @@ static SpaceId SExec(char* name){
 	printf("Unable to open file %s\n", filename);
 	return -1;
     }
+    interrupt->SetLevel(IntOff);
     space = new AddrSpace(executable);    
+    
     if(machine->ReadRegister(2) == -1){
-    	printf("Not enough Space\n\n");
     	delete executable;
     	return -1;
     }
@@ -384,11 +394,28 @@ static SpaceId SExec(char* name){
     t->space = space;
     t->Fork(CreateProcess, 0);
     int id = t->getID();
+    printf("Allocated space for Process :%d\n",id);
    
 
     delete executable;	
+    interrupt->SetLevel(IntOn);
     
 	return id;
+}
+
+static int SJoin(SpaceId me){
+	interrupt->SetLevel(IntOff);
+	Thread * newproc = getThreadbyID(me);
+	if(newproc != NULL){
+		
+		newproc->parent = getThreadbyID(currentThread->getID());
+		currentThread->Sleep();
+		
+		currentThread->numChildren++;
+		return 1;
+			}
+		
+
 }
 
 //////////////////////////////////////////////////////////////////////////

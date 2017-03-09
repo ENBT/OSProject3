@@ -107,6 +107,8 @@ class Thread {
     void FillThreadArray(Thread* t);
     void setParent(int id);
     int numChildren;
+    bool isComplete(){ return completed; }
+    ThreadStatus getStatus(){ return status; }
    // Thread* getThreadbyID(int id);
     Thread * parent;
     
@@ -114,6 +116,7 @@ class Thread {
   private:
     // some of the private data for this class is listed above
     int id;
+    bool completed;
     
     int* stack; 	 		// Bottom of the stack 
 					// NULL if this is the main thread

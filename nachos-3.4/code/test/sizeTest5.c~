@@ -20,7 +20,7 @@ int arr[10];
 int
 main()
 {
-	currentThread->Finish();
+	
 	
 	for(i = 0; i < 10; i++){
 		//a *= a;

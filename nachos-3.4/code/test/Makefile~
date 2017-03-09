@@ -35,7 +35,7 @@ CPP = gcc -E
 INCDIR =-I../userprog -I../threads
 CFLAGS = -G 0 -c $(INCDIR)
 
-all: halt shell matmult sort bingo uno boi sizeTest1 sizeTest2 sizeTest3 sizeTest4
+all: halt shell matmult sort bingo uno boi sizeTest1 sizeTest2 sizeTest3 sizeTest4 sizeTest5 tres
 
 start.o: start.s ../userprog/syscall.h
 	$(CPP) $(CPPFLAGS) start.c > strt.s
@@ -114,3 +114,9 @@ sizeTest5.o: sizeTest5.c
 sizeTest5: sizeTest5.o start.o
 	$(LD) $(LDFLAGS) start.o sizeTest5.o -o sizeTest5.coff
 	../bin/coff2noff sizeTest5.coff sizeTest5
+	
+tres.o: tres.c
+$(CC) $(CFLAGS) -c tres.c
+tres: tres.o start.o
+	$(LD) $(LDFLAGS) start.o tres.o -o tres.coff
+	../bin/coff2noff tres.coff tres

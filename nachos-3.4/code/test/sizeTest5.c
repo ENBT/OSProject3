@@ -26,6 +26,7 @@ main()
 		//a *= a;
 		arr[i] = a;
 	}
+	Exit(0);
 	
 	
 }

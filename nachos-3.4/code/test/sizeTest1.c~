@@ -13,7 +13,7 @@
 #include "syscall.h"
 
 int i;
-int a;
+int a = 2;
 int arr[1500];
 
 int

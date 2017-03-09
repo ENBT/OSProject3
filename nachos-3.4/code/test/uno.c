@@ -18,9 +18,17 @@ main()
 {
 	//Join(Exec("../test/uno"));
 	//Exec("../test/uno");
-	for(ip = 0; ip < 10000; ip++){
+	Write((char*)ip,20,1);
+	for(ip = 0; ip < 5500; ip++){
+		
 		Exec("../test/sizeTest5");
+		Yield();
+		
 	}
+	//id = Exec("../test/sizeTest5");
+	
+	//interrupt here
+	//Join(id);
 	
 	
 }
